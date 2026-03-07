@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPT-2 Training Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #f6f8fa;
+            color: #1f2328;
+            padding: 16px;
+        }
+        h1 {
+            font-size: 20px;
+            margin-bottom: 0;
+            color: #0969da;
+        }
+        .status-bar {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 16px;
+            padding: 12px 16px;
+            background: #ffffff;
+            border-radius: 8px;
+            border: 1px solid #d0d7de;
+            flex-wrap: wrap;
+        }
+        .status-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .status-label {
+            font-size: 11px;
+            color: #656d76;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .status-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2328;
+            font-variant-numeric: tabular-nums;
+        }
+        .status-value.best { color: #1a7f37; }
+        .status-value.warning { color: #bf8700; }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .chart-card {
+            background: #ffffff;
+            border: 1px solid #d0d7de;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        .chart-card h2 {
+            font-size: 28px;
+            color: #656d76;
+            margin-bottom: 12px;
+        }
+        .chart-container {
+            position: relative;
+            height: 400px;
+        }
+        .chart-container-sm {
+            position: relative;
+            height: 400px;
+        }
+        .dot-live {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #1a7f37;
+            border-radius: 50%;
+            margin-right: 6px;
+            animation: pulse 2s infinite;
+        }
+        .dot-offline {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #cf222e;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .selector-group {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .selector-label {
+            font-size: 10px;
+            color: #656d76;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .selector {
+            font-size: 13px;
+            font-weight: 600;
+            padding: 5px 10px;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            background: #fff;
+            color: #1f2328;
+            cursor: pointer;
+        }
+        .selector:hover { border-color: #0969da; }
+        .stage-toggle {
+            display: flex;
+            gap: 0;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #d0d7de;
+        }
+        .stage-btn {
+            padding: 6px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: opacity 0.15s;
+            border: none;
+        }
+        .stage-btn.pretrain { background: #0969da; color: #fff; }
+        .stage-btn.finetune { background: #8250df; color: #fff; }
+        .stage-btn.inactive { opacity: 0.3; }
+        .stage-btn.active { opacity: 1; }
+        .stage-btn:disabled { opacity: 0.15; cursor: not-allowed; }
+        .diag-btn {
+            padding: 8px 16px;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .diag-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        @media (max-width: 1000px) {
+            .grid { grid-template-columns: 1fr; }
+            .grid-3 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <h1><span id="live-dot" class="dot-offline"></span> GPT-2 Training Dashboard</h1>
+            <div class="selector-group">
+                <span class="selector-label">Version</span>
+                <select id="sel-version" class="selector"></select>
+            </div>
+            <div class="selector-group">
+                <span class="selector-label">Backend</span>
+                <select id="sel-backend" class="selector"></select>
+            </div>
+            <div class="stage-toggle">
+                <button class="stage-btn pretrain" id="btn-pretrain">Pretrain</button>
+                <button class="stage-btn finetune" id="btn-finetune">Finetune</button>
+            </div>
+        </div>
+        <div style="display:flex; gap:8px;">
+            <button id="btn-diag-pretrain" class="diag-btn" style="background:#0969da;">Pretrain Diagnostics</button>
+            <button id="btn-diag-finetune" class="diag-btn" style="background:#8250df;">Finetune Diagnostics</button>
+        </div>
+    </div>
+
+    <div class="status-bar">
+        <div class="status-item">
+            <span class="status-label">Epoch</span>
+            <span class="status-value" id="epoch">-</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Train Loss</span>
+            <span class="status-value" id="train-loss">-</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Val Loss</span>
+            <span class="status-value" id="val-loss">-</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Best Val Loss</span>
+            <span class="status-value best" id="best-val-loss">-</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Val PPL</span>
+            <span class="status-value" id="val-ppl">-</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">LR</span>
+            <span class="status-value" id="lr">-</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Patience</span>
+            <span class="status-value" id="patience">-</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Tok/s</span>
+            <span class="status-value" id="throughput">-</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Memory</span>
+            <span class="status-value" id="memory">-</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">ETA</span>
+            <span class="status-value" id="eta">-</span>
+        </div>
+    </div>
+
+    <!-- Row 1: Loss and Perplexity -->
+    <div class="grid">
+        <div class="chart-card">
+            <h2>Loss (Train / Val)</h2>
+            <div class="chart-container"><canvas id="lossChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+            <h2>Perplexity (Train / Val) — Log Scale</h2>
+            <div class="chart-container"><canvas id="pplChart"></canvas></div>
+        </div>
+    </div>
+
+    <!-- Row 2: LR, Grad Norm, Throughput -->
+    <div class="grid-3">
+        <div class="chart-card">
+            <h2>Learning Rate</h2>
+            <div class="chart-container-sm"><canvas id="lrChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+            <h2>Gradient Norm</h2>
+            <div class="chart-container-sm"><canvas id="gradChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+            <h2>Throughput &amp; Memory</h2>
+            <div class="chart-container-sm"><canvas id="throughputChart"></canvas></div>
+        </div>
+    </div>
+
+    <!-- Row 3: Weight Statistics -->
+    <div class="grid">
+        <div class="chart-card">
+            <h2>Attention Weight Stats (per head)</h2>
+            <div style="display:flex; gap:12px; margin-bottom:12px; flex-wrap:wrap;">
+                <label style="font-size:14px; color:#656d76;">
+                    Layer: <select id="ws-layer" style="font-size:14px; padding:4px 8px;"></select>
+                </label>
+                <label style="font-size:14px; color:#656d76;">
+                    Head: <select id="ws-head" style="font-size:14px; padding:4px 8px;"></select>
+                </label>
+                <label style="font-size:14px; color:#656d76;">
+                    Weight: <select id="ws-weight" style="font-size:14px; padding:4px 8px;">
+                        <option value="q">Q</option>
+                        <option value="k">K</option>
+                        <option value="v">V</option>
+                        <option value="o">O</option>
+                    </select>
+                </label>
+            </div>
+            <div class="chart-container"><canvas id="wsAttnChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+            <h2>Layer Weight Stats (MLP / LN / Embeddings)</h2>
+            <div style="display:flex; gap:12px; margin-bottom:12px; flex-wrap:wrap;">
+                <label style="font-size:14px; color:#656d76;">
+                    Component: <select id="ws-component" style="font-size:14px; padding:4px 8px;">
+                        <option value="wte">Token Embedding (wte)</option>
+                        <option value="wpe">Position Embedding (wpe)</option>
+                        <option value="ln_f">Final LayerNorm</option>
+                    </select>
+                </label>
+            </div>
+            <div class="chart-container"><canvas id="wsLayerChart"></canvas></div>
+        </div>
+    </div>
+
+    <script>
+        // ===== State from URL =====
+        const urlParams = new URLSearchParams(window.location.search);
+        let currentVersion = urlParams.get('version') || '';
+        let currentBackend = urlParams.get('backend') || '';
+        let currentStage = urlParams.get('stage') || 'pretrain';
+        let availableData = {};
+
+        // Build query string for API calls
+        function apiParams() {
+            return `version=${currentVersion}&backend=${currentBackend}&stage=${currentStage}`;
+        }
+
+        function navigateToSelection() {
+            const params = new URLSearchParams({
+                version: currentVersion,
+                backend: currentBackend,
+                stage: currentStage,
+            });
+            window.location.search = params.toString();
+        }
+
+        function populateBackends() {
+            const bSel = document.getElementById('sel-backend');
+            bSel.innerHTML = '';
+            const backends = Object.keys(availableData[currentVersion] || {}).sort();
+            const ordered = backends.includes('mps')
+                ? ['mps', ...backends.filter(b => b !== 'mps')]
+                : backends;
+            if (!currentBackend || !ordered.includes(currentBackend)) {
+                currentBackend = ordered[0] || 'mps';
+            }
+            ordered.forEach(b => {
+                const opt = new Option(b.toUpperCase(), b);
+                if (b === currentBackend) opt.selected = true;
+                bSel.add(opt);
+            });
+        }
+
+        function updateStageButtons() {
+            const info = (availableData[currentVersion] || {})[currentBackend] || {};
+            const btnPre = document.getElementById('btn-pretrain');
+            const btnFine = document.getElementById('btn-finetune');
+
+            btnPre.classList.toggle('active', currentStage === 'pretrain');
+            btnPre.classList.toggle('inactive', currentStage !== 'pretrain');
+            btnFine.classList.toggle('active', currentStage === 'finetune');
+            btnFine.classList.toggle('inactive', currentStage !== 'finetune');
+
+            // Disable if no data
+            btnPre.disabled = !info.has_pretrain;
+            btnFine.disabled = !info.has_finetune;
+
+            // Diagnostics buttons
+            document.getElementById('btn-diag-pretrain').disabled = !info.has_pretrain_diagnostics;
+            document.getElementById('btn-diag-finetune').disabled = !info.has_finetune_diagnostics;
+        }
+
+        function updateTitle() {
+            const label = currentStage.charAt(0).toUpperCase() + currentStage.slice(1);
+            document.title = `GPT-2 ${currentVersion.toUpperCase()} (${currentBackend.toUpperCase()}) ${label} Dashboard`;
+        }
+
+        // ===== Initialization =====
+        async function init() {
+            // 1. Discover available versions/backends
+            const resp = await fetch('/api/available');
+            availableData = await resp.json();
+
+            const versions = Object.keys(availableData).sort();
+            if (!currentVersion || !availableData[currentVersion]) {
+                currentVersion = versions[0] || 'v1';
+            }
+
+            // 2. Populate version dropdown
+            const vSel = document.getElementById('sel-version');
+            versions.forEach(v => {
+                const opt = new Option(v.toUpperCase(), v);
+                if (v === currentVersion) opt.selected = true;
+                vSel.add(opt);
+            });
+
+            // 3. Populate backend dropdown
+            populateBackends();
+
+            // 4. Update UI state
+            updateStageButtons();
+            updateTitle();
+
+            // 5. Wire up event listeners
+            vSel.addEventListener('change', (e) => {
+                currentVersion = e.target.value;
+                populateBackends();
+                navigateToSelection();
+            });
+            document.getElementById('sel-backend').addEventListener('change', (e) => {
+                currentBackend = e.target.value;
+                navigateToSelection();
+            });
+            document.getElementById('btn-pretrain').addEventListener('click', () => {
+                if (document.getElementById('btn-pretrain').disabled) return;
+                currentStage = 'pretrain';
+                navigateToSelection();
+            });
+            document.getElementById('btn-finetune').addEventListener('click', () => {
+                if (document.getElementById('btn-finetune').disabled) return;
+                currentStage = 'finetune';
+                navigateToSelection();
+            });
+            document.getElementById('btn-diag-pretrain').addEventListener('click', () => {
+                window.location.href = `/diagnostics?version=${currentVersion}&backend=${currentBackend}&stage=pretrain`;
+            });
+            document.getElementById('btn-diag-finetune').addEventListener('click', () => {
+                window.location.href = `/diagnostics?version=${currentVersion}&backend=${currentBackend}&stage=finetune`;
+            });
+
+            // 6. Load data
+            loadAllData();
+        }
+
+        function loadAllData() {
+            // Load metrics
+            fetch(`/api/metrics?${apiParams()}`)
+                .then(r => r.json())
+                .then(metrics => {
+                    metrics.forEach(processMetric);
+                    startSSE();
+                })
+                .catch(() => startSSE());
+
+            // Load weight stats
+            loadWeightStats();
+        }
+
+        // ===== Chart Setup =====
+        Chart.defaults.color = '#656d76';
+        Chart.defaults.borderColor = '#d0d7de';
+        Chart.defaults.font.family = '-apple-system, system-ui, sans-serif';
+        Chart.defaults.font.size = 14;
+        Chart.defaults.animation.duration = 300;
+
+        const chartOpts = (yLabel, logScale = false) => ({
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: { legend: { labels: { boxWidth: 12, padding: 8 } } },
+            scales: {
+                x: { title: { display: true, text: 'Epoch', font: { size: 15 } }, grid: { color: '#e1e4e8' }, ticks: { font: { size: 14 } } },
+                y: {
+                    title: { display: true, text: yLabel, font: { size: 15 } },
+                    grid: { color: '#e1e4e8' },
+                    ticks: { font: { size: 14 } },
+                    ...(logScale ? { type: 'logarithmic' } : {}),
+                },
+            },
+        });
+
+        const dualAxisOpts = () => ({
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: { legend: { labels: { boxWidth: 12, padding: 8 } } },
+            scales: {
+                x: { title: { display: true, text: 'Epoch', font: { size: 15 } }, grid: { color: '#e1e4e8' }, ticks: { font: { size: 14 } } },
+                y: {
+                    type: 'linear', position: 'left',
+                    title: { display: true, text: 'Tok/s', font: { size: 15 } },
+                    grid: { color: '#e1e4e8' },
+                    ticks: { font: { size: 14 } },
+                },
+                y1: {
+                    type: 'linear', position: 'right',
+                    title: { display: true, text: 'Memory (GB)', font: { size: 15 } },
+                    grid: { drawOnChartArea: false },
+                    ticks: { font: { size: 14 } },
+                },
+            },
+        });
+
+        // Loss chart
+        const lossChart = new Chart(document.getElementById('lossChart'), {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    { label: 'Train', data: [], borderColor: '#0969da', borderWidth: 2, pointRadius: 2, fill: false },
+                    { label: 'Val', data: [], borderColor: '#cf222e', borderWidth: 2, pointRadius: 2, fill: false },
+                    { label: 'Best', data: [], borderColor: '#1a7f37', borderWidth: 0, pointRadius: 8, pointStyle: 'star',
+                      pointBackgroundColor: '#1a7f37', showLine: false },
+                ],
+            },
+            options: chartOpts('Loss'),
+        });
+
+        // PPL chart — LOG SCALE
+        const pplChart = new Chart(document.getElementById('pplChart'), {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    { label: 'Train', data: [], borderColor: '#0969da', borderWidth: 2, pointRadius: 2, fill: false },
+                    { label: 'Val', data: [], borderColor: '#cf222e', borderWidth: 2, pointRadius: 2, fill: false },
+                    { label: 'Best', data: [], borderColor: '#1a7f37', borderWidth: 0, pointRadius: 8, pointStyle: 'star',
+                      pointBackgroundColor: '#1a7f37', showLine: false },
+                ],
+            },
+            options: chartOpts('Perplexity', true),
+        });
+
+        // LR chart
+        const lrChart = new Chart(document.getElementById('lrChart'), {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    { label: 'LR', data: [], borderColor: '#8250df', borderWidth: 2, pointRadius: 1, fill: false },
+                ],
+            },
+            options: chartOpts('Learning Rate'),
+        });
+
+        // Grad norm chart
+        const gradChart = new Chart(document.getElementById('gradChart'), {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    { label: 'Grad Norm', data: [], borderColor: '#bf8700', borderWidth: 2, pointRadius: 1, fill: false },
+                ],
+            },
+            options: chartOpts('Gradient Norm'),
+        });
+
+        // Throughput + Memory chart (dual axis)
+        const throughputChart = new Chart(document.getElementById('throughputChart'), {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    { label: 'Tok/s', data: [], borderColor: '#1a7f37', borderWidth: 2, pointRadius: 1, fill: false, yAxisID: 'y' },
+                    { label: 'Memory (GB)', data: [], borderColor: '#bf3989', borderWidth: 2, pointRadius: 1, fill: false, yAxisID: 'y1' },
+                ],
+            },
+            options: dualAxisOpts(),
+        });
+
+        // ===== Metrics Processing =====
+        let maxEpochs = 100;
+        let bestEpoch = null;
+        let bestLoss = Infinity;
+        let bestPpl = Infinity;
+        let epochTimes = [];
+        const TOKENS_PER_EPOCH = 4383 * 2047;
+
+        function updateFromEpochMetric(m) {
+            const e = m.epoch;
+
+            // Loss chart
+            lossChart.data.labels.push(e);
+            lossChart.data.datasets[0].data.push(m.train_loss);
+            lossChart.data.datasets[1].data.push(m.val_loss);
+            if (m.is_best) {
+                bestEpoch = e;
+                bestLoss = m.val_loss;
+                bestPpl = m.val_ppl;
+                lossChart.data.datasets[2].data = new Array(lossChart.data.labels.length).fill(null);
+                lossChart.data.datasets[2].data[lossChart.data.labels.length - 1] = m.val_loss;
+            } else {
+                lossChart.data.datasets[2].data.push(null);
+            }
+            lossChart.update();
+
+            // PPL chart (log scale) with best star
+            pplChart.data.labels.push(e);
+            pplChart.data.datasets[0].data.push(m.train_ppl);
+            pplChart.data.datasets[1].data.push(m.val_ppl);
+            if (m.is_best) {
+                pplChart.data.datasets[2].data = new Array(pplChart.data.labels.length).fill(null);
+                pplChart.data.datasets[2].data[pplChart.data.labels.length - 1] = m.val_ppl;
+            } else {
+                pplChart.data.datasets[2].data.push(null);
+            }
+            pplChart.update();
+
+            // LR chart
+            lrChart.data.labels.push(e);
+            lrChart.data.datasets[0].data.push(m.lr);
+            lrChart.update();
+
+            // Grad norm chart
+            gradChart.data.labels.push(e);
+            gradChart.data.datasets[0].data.push(m.grad_norm);
+            gradChart.update();
+
+            // Throughput + Memory chart
+            const tokPerSec = m.epoch_time ? Math.round(TOKENS_PER_EPOCH / m.epoch_time) : 0;
+            throughputChart.data.labels.push(e);
+            throughputChart.data.datasets[0].data.push(tokPerSec);
+            throughputChart.data.datasets[1].data.push(m.memory_gb || 0);
+            throughputChart.update();
+
+            // Status bar
+            document.getElementById('epoch').textContent = `${e}/${maxEpochs}`;
+            document.getElementById('train-loss').textContent = m.train_loss.toFixed(4);
+            document.getElementById('val-loss').textContent = m.val_loss.toFixed(4);
+            document.getElementById('best-val-loss').textContent = bestLoss.toFixed(4);
+            document.getElementById('val-ppl').textContent = m.val_ppl.toFixed(1);
+            document.getElementById('lr').textContent = m.lr.toExponential(2);
+            document.getElementById('patience').textContent = `${m.patience}`;
+            if (tokPerSec > 0) {
+                document.getElementById('throughput').textContent = tokPerSec.toLocaleString();
+            }
+            if (m.memory_gb !== undefined) {
+                document.getElementById('memory').textContent = `${m.memory_gb.toFixed(1)} GB`;
+            }
+
+            // ETA
+            if (m.epoch_time) {
+                epochTimes.push(m.epoch_time);
+                const avgTime = epochTimes.reduce((a, b) => a + b, 0) / epochTimes.length;
+                const remaining = (maxEpochs - e) * avgTime;
+                if (remaining > 3600) {
+                    document.getElementById('eta').textContent = `${(remaining / 3600).toFixed(1)}h`;
+                } else if (remaining > 60) {
+                    document.getElementById('eta').textContent = `${(remaining / 60).toFixed(0)}m`;
+                } else {
+                    document.getElementById('eta').textContent = `${remaining.toFixed(0)}s`;
+                }
+            }
+
+            // Patience warning
+            const patienceEl = document.getElementById('patience');
+            patienceEl.className = m.patience >= 7 ? 'status-value warning' : 'status-value';
+        }
+
+        function processMetric(m) {
+            if (m.type === 'start') {
+                maxEpochs = m.max_epochs || 100;
+                document.getElementById('live-dot').className = 'dot-live';
+            } else if (m.type === 'epoch') {
+                updateFromEpochMetric(m);
+            } else if (m.type === 'end') {
+                document.getElementById('live-dot').className = 'dot-offline';
+                document.getElementById('eta').textContent = 'Done';
+            }
+        }
+
+        function startSSE() {
+            const evtSource = new EventSource(`/api/stream?${apiParams()}`);
+            evtSource.onmessage = (event) => {
+                try {
+                    const m = JSON.parse(event.data);
+                    processMetric(m);
+                } catch(e) {}
+            };
+            evtSource.onerror = () => {};
+        }
+
+        // ===== Weight Stats Charts =====
+        const wsColors = {
+            min:    '#cf222e',
+            max:    '#1a7f37',
+            mean:   '#0969da',
+            median: '#8250df',
+            std:    '#bf8700',
+        };
+
+        const wsAttnChart = new Chart(document.getElementById('wsAttnChart'), {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    { label: 'Min',    data: [], borderColor: wsColors.min,    borderWidth: 2, pointRadius: 3, fill: false },
+                    { label: 'Max',    data: [], borderColor: wsColors.max,    borderWidth: 2, pointRadius: 3, fill: false },
+                    { label: 'Mean',   data: [], borderColor: wsColors.mean,   borderWidth: 2, pointRadius: 3, fill: false },
+                    { label: 'Median', data: [], borderColor: wsColors.median, borderWidth: 2, pointRadius: 3, fill: false },
+                    { label: 'Std',    data: [], borderColor: wsColors.std,    borderWidth: 2, pointRadius: 3, fill: false, borderDash: [5,3] },
+                ],
+            },
+            options: chartOpts('Weight Value'),
+        });
+
+        const wsLayerChart = new Chart(document.getElementById('wsLayerChart'), {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    { label: 'Min',    data: [], borderColor: wsColors.min,    borderWidth: 2, pointRadius: 3, fill: false },
+                    { label: 'Max',    data: [], borderColor: wsColors.max,    borderWidth: 2, pointRadius: 3, fill: false },
+                    { label: 'Mean',   data: [], borderColor: wsColors.mean,   borderWidth: 2, pointRadius: 3, fill: false },
+                    { label: 'Median', data: [], borderColor: wsColors.median, borderWidth: 2, pointRadius: 3, fill: false },
+                    { label: 'Std',    data: [], borderColor: wsColors.std,    borderWidth: 2, pointRadius: 3, fill: false, borderDash: [5,3] },
+                ],
+            },
+            options: chartOpts('Weight Value'),
+        });
+
+        let weightStatsData = [];
+
+        function populateWSDropdowns() {
+            if (weightStatsData.length === 0) return;
+            const d = weightStatsData[0];
+            const layerSel = document.getElementById('ws-layer');
+            const headSel = document.getElementById('ws-head');
+            const compSel = document.getElementById('ws-component');
+
+            if (layerSel.options.length === 0) {
+                d.blocks.forEach((b, i) => {
+                    layerSel.add(new Option(`Layer ${i}`, i));
+                });
+            }
+            if (headSel.options.length === 0) {
+                d.blocks[0].attn_heads.forEach((h, i) => {
+                    headSel.add(new Option(`Head ${i}`, i));
+                });
+            }
+            if (compSel.options.length <= 3) {
+                d.blocks.forEach((b, i) => {
+                    compSel.add(new Option(`Layer ${i} MLP FC`, `block_${i}_mlp_fc`));
+                    compSel.add(new Option(`Layer ${i} MLP Proj`, `block_${i}_mlp_proj`));
+                    compSel.add(new Option(`Layer ${i} LN1`, `block_${i}_ln_1`));
+                    compSel.add(new Option(`Layer ${i} LN2`, `block_${i}_ln_2`));
+                });
+            }
+        }
+
+        function getAttnStats(epoch_data, layer, head, weight) {
+            return epoch_data.blocks[layer].attn_heads[head][weight];
+        }
+
+        function getComponentStats(epoch_data, component) {
+            if (component === 'wte') return epoch_data.wte;
+            if (component === 'wpe') return epoch_data.wpe;
+            if (component === 'ln_f') return epoch_data.ln_f;
+            const m = component.match(/^block_(\d+)_(.+)$/);
+            if (m) return epoch_data.blocks[parseInt(m[1])][m[2]];
+            return null;
+        }
+
+        function updateWSAttnChart() {
+            const layer = parseInt(document.getElementById('ws-layer').value);
+            const head = parseInt(document.getElementById('ws-head').value);
+            const weight = document.getElementById('ws-weight').value;
+
+            const labels = [], mins = [], maxs = [], means = [], medians = [], stds = [];
+            weightStatsData.forEach(d => {
+                const s = getAttnStats(d, layer, head, weight);
+                labels.push(d.epoch);
+                mins.push(s.min); maxs.push(s.max);
+                means.push(s.mean); medians.push(s.median); stds.push(s.std);
+            });
+
+            wsAttnChart.data.labels = labels;
+            wsAttnChart.data.datasets[0].data = mins;
+            wsAttnChart.data.datasets[1].data = maxs;
+            wsAttnChart.data.datasets[2].data = means;
+            wsAttnChart.data.datasets[3].data = medians;
+            wsAttnChart.data.datasets[4].data = stds;
+            wsAttnChart.update();
+        }
+
+        function updateWSLayerChart() {
+            const component = document.getElementById('ws-component').value;
+
+            const labels = [], mins = [], maxs = [], means = [], medians = [], stds = [];
+            weightStatsData.forEach(d => {
+                const s = getComponentStats(d, component);
+                if (!s) return;
+                labels.push(d.epoch);
+                mins.push(s.min); maxs.push(s.max);
+                means.push(s.mean); medians.push(s.median); stds.push(s.std);
+            });
+
+            wsLayerChart.data.labels = labels;
+            wsLayerChart.data.datasets[0].data = mins;
+            wsLayerChart.data.datasets[1].data = maxs;
+            wsLayerChart.data.datasets[2].data = means;
+            wsLayerChart.data.datasets[3].data = medians;
+            wsLayerChart.data.datasets[4].data = stds;
+            wsLayerChart.update();
+        }
+
+        document.getElementById('ws-layer').addEventListener('change', updateWSAttnChart);
+        document.getElementById('ws-head').addEventListener('change', updateWSAttnChart);
+        document.getElementById('ws-weight').addEventListener('change', updateWSAttnChart);
+        document.getElementById('ws-component').addEventListener('change', updateWSLayerChart);
+
+        function loadWeightStats() {
+            fetch(`/api/weight_stats?${apiParams()}`)
+                .then(r => r.json())
+                .then(data => {
+                    weightStatsData = data;
+                    populateWSDropdowns();
+                    if (data.length > 0) {
+                        updateWSAttnChart();
+                        updateWSLayerChart();
+                    }
+                })
+                .catch(() => {});
+        }
+
+        // Refresh weight stats every 60s for live training
+        setInterval(loadWeightStats, 60000);
+
+        // Start everything
+        init();
+    </script>
+</body>
+</html>

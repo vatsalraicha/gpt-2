@@ -1,0 +1,39 @@
+# OS
+.DS_Store
+
+# Claude Code
+.claude/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Model checkpoints (too large for git — 1.6GB+)
+*.pt
+*.bin
+
+# Cached tokenized data (regenerated on first run)
+v1/data/cache/
+v1_nvidia/data/cache/
+v1_mlx/data/cache/
+
+# Checkpoint directories (contain .pt files + config.json)
+v1/checkpoints/
+v1_nvidia/checkpoints/
+v1_mlx/checkpoints/
+
+# Runtime control files
+v1/STOP
+v1/LR
+v1_nvidia/STOP
+v1_nvidia/LR
+
+# macOS profiler dumps
+3
+
+# Corpus (copyrighted books — never commit)
+corpus/books.jsonl
+
+# Conda (using venv instead)
+environment.yml

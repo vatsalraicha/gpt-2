@@ -1,0 +1,49 @@
+# v1_nvidia — CUDA GPT-2 Configuration
+# All hyperparameters for architecture and training in one place.
+
+model:
+  vocab_size: 32305        # From tokenizer (256 bytes + 49 special + 32,000 merges)
+  d_model: 512             # Embedding dimension
+  n_layers: 8              # Transformer blocks
+  n_heads: 8               # Attention heads (64 dims/head)
+  d_ff: 2048               # FFN inner dimension (4x d_model)
+  context_length: 2048     # Max sequence length
+  dropout: 0.1             # Dropout rate
+  bias: false              # No bias on Linear layers
+  activation: "gelu"       # GPT-2 standard
+
+training:
+  max_epochs: 100          # Ceiling — early stopping decides when to stop
+  batch_size: 8            # Per-device batch size
+  gradient_accumulation_steps: 4   # Effective batch = 32
+  learning_rate: 0.0006    # Peak LR (6e-4)
+  min_lr: 0.00006          # Cosine decay floor (6e-5, 10x reduction)
+  warmup_fraction: 0.05    # 5% of total steps
+  weight_decay: 0.01       # Applied to non-bias, non-norm params
+  grad_clip: 1.0           # Max gradient norm
+  betas: [0.9, 0.95]       # AdamW betas
+  patience: 10             # Early stopping patience (epochs)
+  min_delta: 0.001         # Minimum improvement to count as progress
+  val_split: 0.1           # 10% held out for validation
+  seed: 42
+
+data:
+  corpus_path: "corpus/books.jsonl"
+  tokenizer_dir: "tokenizer_output/"
+
+paths:
+  checkpoints: "v1_nvidia/checkpoints"
+  logs: "v1_nvidia/logs"
+  plots: "v1_nvidia/plots"
+  metrics: "v1_nvidia/logs/metrics.jsonl"
+
+special_tokens:
+  eos_id: 278              # <|endoftext|>
+  bos_id: 304              # <|startoftext|>
+  source_book_id: 299      # <|source:book|>
+
+dashboard:
+  port: 5000
+  sample_prompt: "The fundamental concept behind"
+  sample_every_n_epochs: 5   # Generate samples every N epochs
+  sample_max_tokens: 100

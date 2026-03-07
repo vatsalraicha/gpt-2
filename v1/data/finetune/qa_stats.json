@@ -1,0 +1,14 @@
+{
+  "total_pairs": 250,
+  "total_words": 18103,
+  "avg_words_per_pair": 72.412,
+  "min_words": 55,
+  "max_words": 92,
+  "batch_files": [
+    "qa_batch1_review.md",
+    "qa_batch2_review.md",
+    "qa_batch3_review.md",
+    "qa_batch4_review.md",
+    "qa_batch5_review.md"
+  ]
+}

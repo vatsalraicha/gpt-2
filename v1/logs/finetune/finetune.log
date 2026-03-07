@@ -1,0 +1,71 @@
+23:05:03 [finetune] Device: mps, seed: 42
+23:05:03 [finetune] Loading pretrained model from /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/pretrained/best
+23:05:04 [finetune] Model loaded: 42,771,968 parameters
+23:05:04 [finetune] Tokenizer loaded: vocab_size=32305
+23:05:04 [finetune] Loading Q&A data from /Users/vr/Code/LLMs/GPT-2/v1/data/finetune/qa_train.jsonl
+23:05:04 [v1.data.finetune_dataset] Loaded 250 Q&A pairs from /Users/vr/Code/LLMs/GPT-2/v1/data/finetune/qa_train.jsonl
+23:05:04 [v1.data.finetune_dataset] Token lengths: min=67, max=108, avg=86, max_length=256
+23:05:04 [v1.data.finetune_dataset] Split: 225 train, 25 val
+23:05:04 [finetune] Train: 225 samples, Val: 25 samples
+23:05:04 [finetune] Sequence length: 256 tokens
+23:05:04 [finetune] Finetune config: lr=0.0003, min_lr=2.9999999999999997e-05, epochs=30, batch=8, accum=1, patience=8
+23:05:05 [finetune] Starting fine-tuning...
+23:05:05 [v1.training.trainer] Training: 30 max epochs, 28 steps/epoch, 28 weight updates/epoch, batch=8, accum=1, effective_batch=8
+23:05:05 [v1.training.trainer] Data: 225 train chunks, 25 val chunks, context=256, tokens/update=2,040
+23:05:10 [v1.training.trainer] Epoch 1/30 | Train Loss: 3.3612 (PPL: 28.83) | Val Loss: 2.8925 (PPL: 18.04) | Time: 4.8s | Mem: 1.1GB
+23:05:10 [v1.training.trainer] Checkpoint saved: /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/finetuned/best
+23:05:10 [v1.training.trainer]   New best (val_loss=2.8925, improved by inf)
+23:05:11 [v1.training.trainer]   Weight stats logged for epoch 1
+23:05:11 [v1.training.trainer]   Resume checkpoint saved (epoch 1)
+23:05:16 [v1.training.trainer] Epoch 2/30 | Train Loss: 2.6320 (PPL: 13.90) | Val Loss: 2.8521 (PPL: 17.32) | Time: 4.6s | Mem: 1.1GB
+23:05:16 [v1.training.trainer] Checkpoint saved: /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/finetuned/best
+23:05:16 [v1.training.trainer]   New best (val_loss=2.8521, improved by 0.0404)
+23:05:16 [v1.training.trainer]   Weight stats logged for epoch 2
+23:05:17 [v1.training.trainer]   Resume checkpoint saved (epoch 2)
+23:05:22 [v1.training.trainer] Epoch 3/30 | Train Loss: 1.9789 (PPL: 7.23) | Val Loss: 3.0105 (PPL: 20.30) | Time: 4.6s | Mem: 1.1GB
+23:05:22 [v1.training.trainer]   No improvement (gap=+0.1584, patience=1/8)
+23:05:22 [v1.training.trainer]   Weight stats logged for epoch 3
+23:05:22 [v1.training.trainer]   Resume checkpoint saved (epoch 3)
+23:05:25 [v1.training.trainer] Step 100 | Epoch 4/30 | Loss: 1.3218 | PPL: 3.75 | LR: 3.00e-04 | Time: 20s | 10117 tok/s
+23:05:27 [v1.training.trainer] Epoch 4/30 | Train Loss: 1.3339 (PPL: 3.80) | Val Loss: 3.1546 (PPL: 23.44) | Time: 4.5s | Mem: 1.1GB
+23:05:27 [v1.training.trainer]   No improvement (gap=+0.3026, patience=2/8)
+23:05:28 [v1.training.trainer]   Weight stats logged for epoch 4
+23:05:28 [v1.training.trainer]   Resume checkpoint saved (epoch 4)
+23:05:33 [v1.training.trainer] Epoch 5/30 | Train Loss: 0.8487 (PPL: 2.34) | Val Loss: 3.3758 (PPL: 29.25) | Time: 4.5s | Mem: 1.1GB
+23:05:33 [v1.training.trainer]   No improvement (gap=+0.5237, patience=3/8)
+23:05:33 [v1.training.trainer]   Weight stats logged for epoch 5
+23:05:34 [v1.training.trainer]   Resume checkpoint saved (epoch 5)
+23:05:38 [v1.training.trainer] Epoch 6/30 | Train Loss: 0.5461 (PPL: 1.73) | Val Loss: 3.4803 (PPL: 32.47) | Time: 4.5s | Mem: 1.1GB
+23:05:38 [v1.training.trainer]   No improvement (gap=+0.6282, patience=4/8)
+23:05:39 [v1.training.trainer]   Weight stats logged for epoch 6
+23:05:39 [v1.training.trainer]   Resume checkpoint saved (epoch 6)
+23:05:44 [v1.training.trainer] Epoch 7/30 | Train Loss: 0.3798 (PPL: 1.46) | Val Loss: 3.6250 (PPL: 37.52) | Time: 4.5s | Mem: 1.1GB
+23:05:44 [v1.training.trainer]   No improvement (gap=+0.7729, patience=5/8)
+23:05:44 [v1.training.trainer]   Weight stats logged for epoch 7
+23:05:45 [v1.training.trainer]   Resume checkpoint saved (epoch 7)
+23:05:45 [v1.training.trainer] Step 200 | Epoch 8/30 | Loss: 0.2479 | PPL: 1.28 | LR: 2.85e-04 | Time: 20s | 10116 tok/s
+23:05:49 [v1.training.trainer] Epoch 8/30 | Train Loss: 0.2834 (PPL: 1.33) | Val Loss: 3.8063 (PPL: 44.98) | Time: 4.5s | Mem: 1.1GB
+23:05:49 [v1.training.trainer]   No improvement (gap=+0.9542, patience=6/8)
+23:05:50 [v1.training.trainer]   Weight stats logged for epoch 8
+23:05:50 [v1.training.trainer]   Resume checkpoint saved (epoch 8)
+23:05:55 [v1.training.trainer] Epoch 9/30 | Train Loss: 0.2300 (PPL: 1.26) | Val Loss: 3.9231 (PPL: 50.56) | Time: 4.6s | Mem: 1.1GB
+23:05:55 [v1.training.trainer]   No improvement (gap=+1.0710, patience=7/8)
+23:05:55 [v1.training.trainer]   Weight stats logged for epoch 9
+23:05:56 [v1.training.trainer]   Resume checkpoint saved (epoch 9)
+23:06:00 [v1.training.trainer] Epoch 10/30 | Train Loss: 0.1919 (PPL: 1.21) | Val Loss: 3.9383 (PPL: 51.33) | Time: 4.5s | Mem: 1.1GB
+23:06:00 [v1.training.trainer]   No improvement (gap=+1.0862, patience=8/8)
+23:06:01 [v1.training.trainer]   Weight stats logged for epoch 10
+23:06:01 [v1.training.trainer]   Resume checkpoint saved (epoch 10)
+23:06:01 [v1.training.trainer] Early stopping at epoch 10 (patience=8)
+23:06:01 [v1.training.trainer] Checkpoint saved: /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/finetuned/final
+23:06:01 [v1.training.trainer] Training complete: {'total_steps': 280, 'total_epochs': 10, 'best_val_loss': 2.852095127105713, 'best_val_ppl': 17.324039910268706, 'total_time_seconds': 56.37100386619568}
+23:06:01 [finetune] Fine-tuning complete!
+23:06:01 [finetune] Best checkpoint: /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/finetuned/best
+23:06:01 [finetune] Metrics: /Users/vr/Code/LLMs/GPT-2/v1/logs/finetune/metrics.jsonl
+23:06:01 [finetune] Weight stats: /Users/vr/Code/LLMs/GPT-2/v1/logs/finetune/weight_stats.jsonl
+23:06:01 [finetune] Log: /Users/vr/Code/LLMs/GPT-2/v1/logs/finetune/finetune.log
+23:06:01 [finetune] 
+23:06:01 [finetune] Run diagnostics:
+23:06:01 [finetune]   python -m v1.scripts.diagnose --stage finetune
+23:06:01 [finetune] View in dashboard:
+23:06:01 [finetune]   http://localhost:5000/?stage=finetune

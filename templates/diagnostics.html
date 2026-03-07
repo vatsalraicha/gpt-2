@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPT-2 — Model Diagnostics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #f6f8fa;
+            color: #1f2328;
+            padding: 16px;
+        }
+        h1 { font-size: 20px; color: #0969da; margin-bottom: 0; }
+        h2.section-title {
+            font-size: 16px; margin: 20px 0 10px; color: #1f2328;
+            border-bottom: 1px solid #d0d7de; padding-bottom: 6px;
+        }
+        .header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 16px; flex-wrap: wrap; gap: 12px;
+        }
+        .header-left {
+            display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+        }
+        .btn {
+            display: inline-block; padding: 8px 16px; border-radius: 6px;
+            text-decoration: none; font-size: 14px; font-weight: 500; border: none; cursor: pointer;
+        }
+        .btn-primary { background: #0969da; color: #fff; }
+        .btn-secondary { background: #656d76; color: #fff; }
+        .selector-group {
+            display: flex; flex-direction: column; gap: 2px;
+        }
+        .selector-label {
+            font-size: 10px; color: #656d76; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .selector {
+            font-size: 13px; font-weight: 600; padding: 5px 10px;
+            border: 1px solid #d0d7de; border-radius: 6px;
+            background: #fff; color: #1f2328; cursor: pointer;
+        }
+        .selector:hover { border-color: #0969da; }
+        .status-bar {
+            display: flex; gap: 24px; margin-bottom: 16px; padding: 12px 16px;
+            background: #fff; border-radius: 8px; border: 1px solid #d0d7de; flex-wrap: wrap;
+        }
+        .status-item { display: flex; flex-direction: column; }
+        .status-label { font-size: 11px; color: #656d76; text-transform: uppercase; letter-spacing: 0.5px; }
+        .status-value { font-size: 18px; font-weight: 600; color: #1f2328; font-variant-numeric: tabular-nums; }
+        .status-value.good { color: #1a7f37; }
+        .status-value.warn { color: #bf8700; }
+        .status-value.bad { color: #cf222e; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+        .chart-card {
+            background: #fff; border: 1px solid #d0d7de; border-radius: 8px; padding: 12px;
+        }
+        .chart-card h3 { font-size: 12px; color: #656d76; margin-bottom: 8px; text-align: center; }
+        .chart-container { position: relative; height: 320px; }
+        .chart-container-sm { position: relative; height: 280px; }
+        .heatmap { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        .heatmap td {
+            height: 40px; text-align: center; font-size: 12px;
+            font-weight: 600; border: 2px solid #f6f8fa; border-radius: 3px;
+        }
+        .heatmap th { font-size: 11px; color: #656d76; padding: 4px 6px; font-weight: 600; }
+        .heatmap-container { padding: 10px 0; }
+        .error-msg {
+            text-align: center; padding: 40px; color: #656d76; font-size: 16px;
+            background: #fff; border: 1px solid #d0d7de; border-radius: 8px; margin: 40px 0;
+        }
+        .error-msg code { background: #f0f0f0; padding: 4px 8px; border-radius: 4px; font-size: 13px; }
+        .stage-toggle { display: flex; gap: 0; border-radius: 6px; overflow: hidden; border: 1px solid #d0d7de; }
+        .stage-btn {
+            padding: 6px 16px; font-size: 13px; font-weight: 600;
+            text-decoration: none; cursor: pointer; border: none;
+            transition: opacity 0.15s;
+        }
+        .stage-btn.pretrain { background: #0969da; color: #fff; }
+        .stage-btn.finetune { background: #8250df; color: #fff; }
+        .stage-btn.inactive { opacity: 0.3; }
+        .stage-btn.active { opacity: 1; }
+        .stage-btn:disabled { opacity: 0.15; cursor: not-allowed; }
+        @media (max-width: 1000px) {
+            .grid { grid-template-columns: 1fr; }
+            .grid-3 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <h1 id="page-title">Model Diagnostics</h1>
+            <div class="selector-group">
+                <span class="selector-label">Version</span>
+                <select id="sel-version" class="selector"></select>
+            </div>
+            <div class="selector-group">
+                <span class="selector-label">Backend</span>
+                <select id="sel-backend" class="selector"></select>
+            </div>
+            <div class="stage-toggle">
+                <button id="btn-pretrain" class="stage-btn pretrain">Pretrain</button>
+                <button id="btn-finetune" class="stage-btn finetune">Finetune</button>
+            </div>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center;">
+            <button id="btn-dashboard" class="btn btn-secondary">&larr; Dashboard</button>
+        </div>
+    </div>
+
+    <div id="status-bar" class="status-bar">
+        <div class="status-item"><span class="status-label">Status</span><span class="status-value" id="st-status">Loading...</span></div>
+    </div>
+
+    <div id="content" style="display:none;">
+
+        <!-- 1. ATTENTION ANALYSIS -->
+        <h2 class="section-title">1. Attention Analysis</h2>
+        <div class="grid">
+            <div class="chart-card">
+                <h3>Attention Entropy (1.0 = uniform/unfocused, 0.0 = sharp/focused)</h3>
+                <div class="heatmap-container" id="entropy-heatmap"></div>
+            </div>
+            <div class="chart-card">
+                <h3>Locality Score (1.0 = nearby only, 0.0 = long-range)</h3>
+                <div class="heatmap-container" id="locality-heatmap"></div>
+            </div>
+        </div>
+
+        <!-- 2. EMBEDDING ANALYSIS -->
+        <h2 class="section-title">2. Embedding Analysis</h2>
+        <div class="grid-3">
+            <div class="chart-card">
+                <h3>Singular Value Spectrum</h3>
+                <div class="chart-container-sm"><canvas id="svdChart"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <h3>Within-Group Similarity (Higher = better clustering)</h3>
+                <div class="chart-container-sm"><canvas id="groupSimChart"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <h3>Cross-Group Similarity (Lower = better separation)</h3>
+                <div class="chart-container-sm"><canvas id="crossSimChart"></canvas></div>
+            </div>
+        </div>
+
+        <!-- 3. TOKEN PREDICTION -->
+        <h2 class="section-title">3. Token Prediction Analysis</h2>
+        <div class="grid-3">
+            <div class="chart-card">
+                <h3>Accuracy by Position (smoothed)</h3>
+                <div class="chart-container-sm"><canvas id="accByPosChart"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <h3>Confidence by Position (smoothed)</h3>
+                <div class="chart-container-sm"><canvas id="confByPosChart"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <h3>First Half vs Second Half Accuracy</h3>
+                <div class="chart-container-sm"><canvas id="halfCompChart"></canvas></div>
+            </div>
+        </div>
+
+        <!-- 4. CAPACITY ANALYSIS -->
+        <h2 class="section-title">4. Capacity Analysis</h2>
+        <div class="grid-3">
+            <div class="chart-card">
+                <h3>Weight Std by Layer (red line = init std 0.02)</h3>
+                <div class="chart-container"><canvas id="weightStdChart"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <h3>Dead Weight Fraction (|w| &lt; 0.001)</h3>
+                <div class="chart-container"><canvas id="deadWeightChart"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <h3>Rank Utilization (90% variance / max rank)</h3>
+                <div class="chart-container"><canvas id="rankUtilChart"></canvas></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="error-container"></div>
+
+<script>
+// ===== State from URL =====
+const urlParams = new URLSearchParams(window.location.search);
+let currentVersion = urlParams.get('version') || '';
+let currentBackend = urlParams.get('backend') || '';
+let currentStage = urlParams.get('stage') || 'pretrain';
+let availableData = {};
+
+function apiParams() {
+    return `version=${currentVersion}&backend=${currentBackend}&stage=${currentStage}`;
+}
+
+function navigateToSelection() {
+    const params = new URLSearchParams({
+        version: currentVersion,
+        backend: currentBackend,
+        stage: currentStage,
+    });
+    window.location.search = params.toString();
+}
+
+function populateBackends() {
+    const bSel = document.getElementById('sel-backend');
+    bSel.innerHTML = '';
+    const backends = Object.keys(availableData[currentVersion] || {}).sort();
+    const ordered = backends.includes('mps')
+        ? ['mps', ...backends.filter(b => b !== 'mps')]
+        : backends;
+    if (!currentBackend || !ordered.includes(currentBackend)) {
+        currentBackend = ordered[0] || 'mps';
+    }
+    ordered.forEach(b => {
+        const opt = new Option(b.toUpperCase(), b);
+        if (b === currentBackend) opt.selected = true;
+        bSel.add(opt);
+    });
+}
+
+function updateStageButtons() {
+    const info = (availableData[currentVersion] || {})[currentBackend] || {};
+    const btnPre = document.getElementById('btn-pretrain');
+    const btnFine = document.getElementById('btn-finetune');
+
+    btnPre.classList.toggle('active', currentStage === 'pretrain');
+    btnPre.classList.toggle('inactive', currentStage !== 'pretrain');
+    btnFine.classList.toggle('active', currentStage === 'finetune');
+    btnFine.classList.toggle('inactive', currentStage !== 'finetune');
+
+    btnPre.disabled = !info.has_pretrain_diagnostics;
+    btnFine.disabled = !info.has_finetune_diagnostics;
+}
+
+async function init() {
+    const resp = await fetch('/api/available');
+    availableData = await resp.json();
+
+    const versions = Object.keys(availableData).sort();
+    if (!currentVersion || !availableData[currentVersion]) {
+        currentVersion = versions[0] || 'v1';
+    }
+
+    const vSel = document.getElementById('sel-version');
+    versions.forEach(v => {
+        const opt = new Option(v.toUpperCase(), v);
+        if (v === currentVersion) opt.selected = true;
+        vSel.add(opt);
+    });
+
+    populateBackends();
+    updateStageButtons();
+
+    const stageLabel = currentStage.charAt(0).toUpperCase() + currentStage.slice(1);
+    document.getElementById('page-title').textContent = `${stageLabel} Diagnostics`;
+    document.title = `GPT-2 ${currentVersion.toUpperCase()} (${currentBackend.toUpperCase()}) — ${stageLabel} Diagnostics`;
+
+    // Event listeners
+    vSel.addEventListener('change', (e) => {
+        currentVersion = e.target.value;
+        populateBackends();
+        navigateToSelection();
+    });
+    document.getElementById('sel-backend').addEventListener('change', (e) => {
+        currentBackend = e.target.value;
+        navigateToSelection();
+    });
+    document.getElementById('btn-pretrain').addEventListener('click', () => {
+        if (document.getElementById('btn-pretrain').disabled) return;
+        currentStage = 'pretrain';
+        navigateToSelection();
+    });
+    document.getElementById('btn-finetune').addEventListener('click', () => {
+        if (document.getElementById('btn-finetune').disabled) return;
+        currentStage = 'finetune';
+        navigateToSelection();
+    });
+    document.getElementById('btn-dashboard').addEventListener('click', () => {
+        window.location.href = `/?version=${currentVersion}&backend=${currentBackend}&stage=${currentStage}`;
+    });
+
+    // Fetch diagnostics
+    loadDiagnostics();
+}
+
+function loadDiagnostics() {
+    const stageLabel = currentStage.charAt(0).toUpperCase() + currentStage.slice(1);
+    const dirName = currentBackend === 'mps' ? currentVersion : `${currentVersion}_${currentBackend}`;
+
+    fetch(`/api/diagnostics?${apiParams()}`)
+        .then(r => {
+            if (!r.ok) throw new Error('No diagnostics data');
+            return r.json();
+        })
+        .then(data => {
+            if (data.error) throw new Error(data.error);
+            renderAll(data);
+        })
+        .catch(err => {
+            document.getElementById('status-bar').style.display = 'none';
+            document.getElementById('error-container').innerHTML = `
+                <div class="error-msg">
+                    <p style="font-size:18px; margin-bottom:12px;">No ${stageLabel} diagnostics data found</p>
+                    <p>Run the diagnostic script first:</p>
+                    <p style="margin-top:8px;"><code>python -m ${dirName}.scripts.diagnose --stage ${currentStage}</code></p>
+                    <p style="margin-top:16px;"><button onclick="window.location.href='/?version=${currentVersion}&backend=${currentBackend}&stage=${currentStage}'" class="btn btn-primary">Back to Dashboard</button></p>
+                </div>
+            `;
+        });
+}
+
+// ─── Chart.js defaults ───
+Chart.defaults.animation = false;
+Chart.defaults.responsive = true;
+Chart.defaults.maintainAspectRatio = false;
+Chart.defaults.plugins.legend.display = false;
+Chart.defaults.elements.point.radius = 0;
+
+function chartOpts(title, yLabel, extra = {}) {
+    return {
+        plugins: { title: { display: false }, legend: { display: extra.legend || false } },
+        scales: {
+            x: { title: { display: !!extra.xLabel, text: extra.xLabel || '' }, grid: { display: false } },
+            y: { title: { display: true, text: yLabel }, grid: { color: '#eee' }, ...extra.yScale },
+        },
+        ...extra.chartExtra,
+    };
+}
+
+// ─── Color interpolation for heatmaps ───
+function lerp(a, b, t) { return Math.round(a + (b - a) * t); }
+
+function interpolate3(val, c0, c1, c2) {
+    let t, a, b;
+    if (val <= 0.5) { t = val * 2; a = c0; b = c1; }
+    else { t = (val - 0.5) * 2; a = c1; b = c2; }
+    return `rgb(${lerp(a[0],b[0],t)},${lerp(a[1],b[1],t)},${lerp(a[2],b[2],t)})`;
+}
+
+function renderHeatmap(containerId, matrix, colors, nLayers, nHeads) {
+    const container = document.getElementById(containerId);
+    let minV = 1, maxV = 0;
+    for (let l = 0; l < nLayers; l++)
+        for (let h = 0; h < nHeads; h++) {
+            minV = Math.min(minV, matrix[l][h]);
+            maxV = Math.max(maxV, matrix[l][h]);
+        }
+    const range = maxV - minV || 1;
+
+    let html = '<table class="heatmap"><tr><th></th>';
+    for (let h = 0; h < nHeads; h++) html += `<th>H${h}</th>`;
+    html += '</tr>';
+    for (let l = 0; l < nLayers; l++) {
+        html += `<tr><th>L${l}</th>`;
+        for (let h = 0; h < nHeads; h++) {
+            const val = matrix[l][h];
+            const norm = (val - minV) / range;
+            const bg = interpolate3(norm, colors[0], colors[1], colors[2]);
+            // Use luminance to pick text color (works for any colormap)
+            const rgb = [colors[0], colors[1], colors[2]].map((c, i) => {
+                const t2 = norm <= 0.5 ? norm * 2 : (norm - 0.5) * 2;
+                const a = norm <= 0.5 ? colors[0] : colors[1];
+                const b = norm <= 0.5 ? colors[1] : colors[2];
+                return Math.round(a[i] + (b[i] - a[i]) * t2);
+            });
+            const lum = (0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2]) / 255;
+            const textColor = lum > 0.5 ? '#1f2328' : '#fff';
+            html += `<td style="background:${bg}; color:${textColor}" title="Layer ${l}, Head ${h}: ${val.toFixed(3)}">${val.toFixed(2)}</td>`;
+        }
+        html += '</tr>';
+    }
+    html += '</table>';
+    container.innerHTML = html;
+}
+
+function smooth(arr, window) {
+    if (arr.length <= window) return arr;
+    const out = [];
+    for (let i = 0; i <= arr.length - window; i++) {
+        let sum = 0;
+        for (let j = 0; j < window; j++) sum += arr[i + j];
+        out.push(sum / window);
+    }
+    return out;
+}
+
+function shortName(name) {
+    return name.replace('blocks.', 'b').replace('.weight', '').replace('attn.', 'a.').replace('mlp.', 'm.');
+}
+
+function renderAll(data) {
+    const sb = document.getElementById('status-bar');
+    const attn = data.attention;
+    const emb = data.embeddings;
+    const pred = data.predictions.aggregate;
+    const cap = data.capacity.global;
+
+    sb.innerHTML = `
+        <div class="status-item"><span class="status-label">Checkpoint</span><span class="status-value" style="font-size:13px">${data.checkpoint.split('/').slice(-2).join('/')}</span></div>
+        <div class="status-item"><span class="status-label">Timestamp</span><span class="status-value" style="font-size:13px">${data.timestamp}</span></div>
+        <div class="status-item"><span class="status-label">Avg Entropy</span><span class="status-value ${attn.avg_entropy > 0.85 ? 'bad' : attn.avg_entropy > 0.7 ? 'warn' : 'good'}">${attn.avg_entropy.toFixed(3)}</span></div>
+        <div class="status-item"><span class="status-label">Top-1 Accuracy</span><span class="status-value ${pred.overall_accuracy < 0.1 ? 'bad' : pred.overall_accuracy < 0.3 ? 'warn' : 'good'}">${(pred.overall_accuracy * 100).toFixed(1)}%</span></div>
+        <div class="status-item"><span class="status-label">Embed Dims (90%)</span><span class="status-value">${emb.dims_for_90pct} / ${emb.d_model}</span></div>
+        <div class="status-item"><span class="status-label">Dead Weights</span><span class="status-value ${cap.near_zero_fraction > 0.3 ? 'bad' : cap.near_zero_fraction > 0.15 ? 'warn' : 'good'}">${(cap.near_zero_fraction * 100).toFixed(1)}%</span></div>
+        <div class="status-item"><span class="status-label">Params</span><span class="status-value">${(cap.total_params / 1e6).toFixed(1)}M</span></div>
+    `;
+
+    document.getElementById('content').style.display = 'block';
+
+    // 1. Attention heatmaps
+    // Entropy: RdYlGn_r — green (focused) → yellow (mid) → red (diffuse)
+    renderHeatmap('entropy-heatmap', attn.entropy_matrix,
+        [[0, 104, 55], [255, 255, 191], [165, 0, 38]],
+        attn.n_layers, attn.n_heads);
+    // Locality: Blues — white/light blue (long-range) → dark blue (local)
+    renderHeatmap('locality-heatmap', attn.locality_matrix,
+        [[247, 251, 255], [107, 174, 214], [8, 48, 107]],
+        attn.n_layers, attn.n_heads);
+
+    // 2. Embedding charts
+    const svs = emb.singular_values_top50;
+    new Chart(document.getElementById('svdChart'), {
+        type: 'bar',
+        data: { labels: svs.map((_, i) => i), datasets: [{ data: svs, backgroundColor: 'rgba(70, 130, 180, 0.8)' }] },
+        options: chartOpts('', 'Singular Value', { xLabel: 'Index' }),
+    });
+
+    const groups = emb.group_similarities;
+    const groupNames = Object.keys(groups);
+    const withinSims = groupNames.map(g => groups[g].avg_cosine_similarity);
+    const randomBl = emb.random_baseline_similarity;
+
+    new Chart(document.getElementById('groupSimChart'), {
+        type: 'bar',
+        data: { labels: groupNames, datasets: [{ data: withinSims, backgroundColor: 'rgba(255, 127, 80, 0.8)' }] },
+        options: {
+            ...chartOpts('', 'Avg Cosine Similarity'),
+            plugins: { annotation: { annotations: { baseline: { type: 'line', yMin: randomBl, yMax: randomBl, borderColor: 'gray', borderDash: [5, 5] } } } }
+        },
+    });
+
+    const crossNames = Object.keys(emb.cross_group_similarities);
+    const crossVals = crossNames.map(k => emb.cross_group_similarities[k]);
+    new Chart(document.getElementById('crossSimChart'), {
+        type: 'bar',
+        data: { labels: crossNames, datasets: [{ data: crossVals, backgroundColor: 'rgba(147, 112, 219, 0.8)' }] },
+        options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { title: { display: true, text: 'Cosine Similarity' }, grid: { color: '#eee' } }, y: { ticks: { font: { size: 9 } }, grid: { display: false } } } },
+    });
+
+    // 3. Token prediction charts
+    const accByPos = smooth(pred.accuracy_by_position, 20);
+    const confByPos = smooth(pred.confidence_by_position, 20);
+
+    new Chart(document.getElementById('accByPosChart'), {
+        type: 'line',
+        data: { labels: accByPos.map((_, i) => i), datasets: [{ data: accByPos, borderColor: 'rgba(70, 130, 180, 1)', backgroundColor: 'rgba(70, 130, 180, 0.1)', fill: true, borderWidth: 1.5, pointRadius: 0 }] },
+        options: chartOpts('', 'Accuracy (Top-1)', { xLabel: 'Position', yScale: { min: 0, max: 1 } }),
+    });
+
+    new Chart(document.getElementById('confByPosChart'), {
+        type: 'line',
+        data: { labels: confByPos.map((_, i) => i), datasets: [{ data: confByPos, borderColor: 'rgba(220, 80, 60, 1)', backgroundColor: 'rgba(220, 80, 60, 0.1)', fill: true, borderWidth: 1.5, pointRadius: 0 }] },
+        options: chartOpts('', 'P(correct token)', { xLabel: 'Position' }),
+    });
+
+    const samples = data.predictions.samples;
+    new Chart(document.getElementById('halfCompChart'), {
+        type: 'bar',
+        data: {
+            labels: samples.map((_, i) => `S${i}`),
+            datasets: [
+                { label: 'First half', data: samples.map(s => s.first_half_accuracy), backgroundColor: 'rgba(70, 130, 180, 0.8)' },
+                { label: 'Second half', data: samples.map(s => s.second_half_accuracy), backgroundColor: 'rgba(255, 127, 80, 0.8)' },
+            ]
+        },
+        options: { plugins: { legend: { display: true, position: 'top', labels: { font: { size: 10 } } } }, scales: { x: { grid: { display: false } }, y: { title: { display: true, text: 'Accuracy' }, min: 0, max: 1, grid: { color: '#eee' } } } },
+    });
+
+    // 4. Capacity charts
+    const layers = data.capacity.layers;
+    const layerNames = layers.map(l => shortName(l.name));
+
+    new Chart(document.getElementById('weightStdChart'), {
+        type: 'bar',
+        data: { labels: layerNames, datasets: [{ data: layers.map(l => l.std), backgroundColor: 'rgba(70, 130, 180, 0.8)' }] },
+        options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { title: { display: true, text: 'Weight Std Dev' }, grid: { color: '#eee' } }, y: { ticks: { font: { size: 7 } }, grid: { display: false } } } },
+    });
+
+    new Chart(document.getElementById('deadWeightChart'), {
+        type: 'bar',
+        data: { labels: layerNames, datasets: [{ data: layers.map(l => l.near_zero_fraction), backgroundColor: 'rgba(255, 127, 80, 0.8)' }] },
+        options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { title: { display: true, text: 'Fraction Near Zero' }, grid: { color: '#eee' } }, y: { ticks: { font: { size: 7 } }, grid: { display: false } } } },
+    });
+
+    const rankLayers = layers.filter(l => l.rank_utilization !== undefined);
+    new Chart(document.getElementById('rankUtilChart'), {
+        type: 'bar',
+        data: { labels: rankLayers.map(l => shortName(l.name)), datasets: [{ data: rankLayers.map(l => l.rank_utilization), backgroundColor: 'rgba(147, 112, 219, 0.8)' }] },
+        options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { title: { display: true, text: 'Rank Utilization (90% variance)' }, min: 0, max: 1.05, grid: { color: '#eee' } }, y: { ticks: { font: { size: 7 } }, grid: { display: false } } } },
+    });
+}
+
+// Start everything
+init();
+</script>
+</body>
+</html>

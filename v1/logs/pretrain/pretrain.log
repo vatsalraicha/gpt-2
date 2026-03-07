@@ -1,0 +1,260 @@
+2026-03-05 00:44:36 | pretrain | INFO | Device: mps
+2026-03-05 00:44:36 | pretrain | INFO | Config: /Users/vr/Code/LLMs/GPT-2/v1/config.yaml
+2026-03-05 00:44:37 | pretrain | INFO | Model: GPT2Config(vocab_size=32305, d_model=512, n_layers=8, n_heads=8, d_ff=2048, context_length=2048, dropout=0.1, bias=False)
+2026-03-05 00:44:37 | pretrain | INFO | Parameters: 42,771,968
+2026-03-05 00:44:37 | pretrain | INFO | Preparing datasets...
+2026-03-05 00:44:37 | v1.data.dataset | INFO | Loading cached tokens from /Users/vr/Code/LLMs/GPT-2/v1/data/cache/tokenized.npy
+2026-03-05 00:44:37 | v1.data.dataset | INFO | Loaded 9,973,151 cached tokens
+2026-03-05 00:44:37 | v1.data.dataset | INFO | Chunked 9,973,151 tokens into 4,869 chunks of 2048 tokens (1439 tokens dropped)
+2026-03-05 00:44:37 | v1.data.dataset | INFO | Split: 4383 train, 486 val (10% held out)
+2026-03-05 00:44:37 | pretrain | INFO | Train: 4383 chunks, Val: 486 chunks
+2026-03-05 00:44:39 | pretrain | INFO | Starting pretraining...
+2026-03-05 00:44:39 | v1.training.trainer | INFO | Training: 100 max epochs, 547 steps/epoch, 136 weight updates/epoch, batch=8, accum=4, effective_batch=32
+2026-03-05 00:44:39 | v1.training.trainer | INFO | Data: 4383 train chunks, 486 val chunks, context=2048, tokens/update=65,504
+2026-03-05 01:04:44 | v1.training.trainer | INFO | Step 100 | Epoch 1/100 | Loss: 10.0250 | PPL: 22585.14 | LR: 2.17e-05 | Time: 1205s | 1359 tok/s
+2026-03-05 01:19:05 | v1.training.trainer | INFO | Step 200 | Epoch 1/100 | Loss: 9.6752 | PPL: 15918.15 | LR: 4.37e-05 | Time: 2065s | 1586 tok/s
+2026-03-05 01:25:50 | v1.training.trainer | INFO | Step 300 | Epoch 1/100 | Loss: 9.2971 | PPL: 10906.84 | LR: 6.56e-05 | Time: 2470s | 1989 tok/s
+2026-03-05 01:32:18 | v1.training.trainer | INFO | Step 400 | Epoch 1/100 | Loss: 8.8841 | PPL: 7216.66 | LR: 8.75e-05 | Time: 2859s | 2292 tok/s
+2026-03-05 01:38:22 | v1.training.trainer | INFO | Step 500 | Epoch 1/100 | Loss: 8.4922 | PPL: 4876.68 | LR: 1.09e-04 | Time: 3223s | 2540 tok/s
+2026-03-05 01:42:08 | v1.training.trainer | INFO | Epoch 1/100 | Train Loss: 8.3299 (PPL: 4145.99) | Val Loss: 6.5609 (PPL: 706.88) | Time: 3402.0s | Mem: 4.0GB
+2026-03-05 01:42:09 | v1.training.trainer | INFO | Checkpoint saved: /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/pretrained/best
+2026-03-05 01:42:09 | v1.training.trainer | INFO |   New best (val_loss=6.5609, improved by inf)
+2026-03-05 01:47:47 | v1.training.trainer | INFO | Step 600 | Epoch 2/100 | Loss: 6.3730 | PPL: 585.79 | LR: 1.31e-04 | Time: 3788s | 2594 tok/s
+2026-03-05 01:58:06 | v1.training.trainer | INFO | Step 700 | Epoch 2/100 | Loss: 6.2445 | PPL: 515.15 | LR: 1.53e-04 | Time: 4406s | 2602 tok/s
+2026-03-05 02:08:17 | v1.training.trainer | INFO | Step 800 | Epoch 2/100 | Loss: 6.1327 | PPL: 460.69 | LR: 1.75e-04 | Time: 5017s | 2611 tok/s
+2026-03-05 02:19:21 | v1.training.trainer | INFO | Step 900 | Epoch 2/100 | Loss: 6.0366 | PPL: 418.49 | LR: 1.97e-04 | Time: 5682s | 2594 tok/s
+2026-03-05 02:30:18 | v1.training.trainer | INFO | Step 1000 | Epoch 2/100 | Loss: 5.9545 | PPL: 385.50 | LR: 2.19e-04 | Time: 6338s | 2584 tok/s
+2026-03-05 02:41:41 | v1.training.trainer | INFO | Epoch 2/100 | Train Loss: 5.8857 (PPL: 359.86) | Val Loss: 5.5552 (PPL: 258.59) | Time: 3525.4s | Mem: 4.0GB
+2026-03-05 02:41:42 | v1.training.trainer | INFO | Checkpoint saved: /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/pretrained/best
+2026-03-05 02:41:42 | v1.training.trainer | INFO |   New best (val_loss=5.5552, improved by 1.0056)
+2026-03-05 02:42:28 | v1.training.trainer | INFO | Step 1100 | Epoch 3/100 | Loss: 5.4751 | PPL: 238.68 | LR: 2.41e-04 | Time: 7069s | 2548 tok/s
+2026-03-05 03:07:10 | v1.training.trainer | INFO | Step 1200 | Epoch 3/100 | Loss: 5.4445 | PPL: 231.47 | LR: 2.63e-04 | Time: 8551s | 2298 tok/s
+2026-03-05 03:34:50 | v1.training.trainer | INFO | Step 1300 | Epoch 3/100 | Loss: 5.3582 | PPL: 212.34 | LR: 2.85e-04 | Time: 10210s | 2085 tok/s
+2026-03-05 03:56:02 | v1.training.trainer | INFO | Step 1400 | Epoch 3/100 | Loss: 5.3107 | PPL: 202.49 | LR: 3.07e-04 | Time: 11483s | 1997 tok/s
+2026-03-05 04:13:07 | v1.training.trainer | INFO | Step 1500 | Epoch 3/100 | Loss: 5.2805 | PPL: 196.47 | LR: 3.29e-04 | Time: 12507s | 1964 tok/s
+2026-03-05 04:27:09 | v1.training.trainer | INFO | Step 1600 | Epoch 3/100 | Loss: 5.2438 | PPL: 189.38 | LR: 3.51e-04 | Time: 13350s | 1963 tok/s
+2026-03-05 04:35:03 | v1.training.trainer | INFO | Epoch 3/100 | Train Loss: 5.2292 (PPL: 186.64) | Val Loss: 5.0819 (PPL: 161.08) | Time: 6750.9s | Mem: 4.0GB
+2026-03-05 04:35:03 | v1.training.trainer | INFO | Checkpoint saved: /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/pretrained/best
+2026-03-05 04:35:03 | v1.training.trainer | INFO |   New best (val_loss=5.0819, improved by 0.4733)
+2026-03-05 04:42:15 | v1.training.trainer | INFO | Step 1700 | Epoch 4/100 | Loss: 4.9069 | PPL: 135.22 | LR: 3.73e-04 | Time: 14256s | 1953 tok/s
+2026-03-05 04:52:23 | v1.training.trainer | INFO | Step 1800 | Epoch 4/100 | Loss: 4.9225 | PPL: 137.35 | LR: 3.95e-04 | Time: 14863s | 1983 tok/s
+2026-03-05 05:01:47 | v1.training.trainer | INFO | Step 1900 | Epoch 4/100 | Loss: 4.8836 | PPL: 132.10 | LR: 4.17e-04 | Time: 15428s | 2017 tok/s
+2026-03-05 05:11:52 | v1.training.trainer | INFO | Step 2000 | Epoch 4/100 | Loss: 4.8528 | PPL: 128.10 | LR: 4.39e-04 | Time: 16033s | 2043 tok/s
+2026-03-05 05:22:05 | v1.training.trainer | INFO | Step 2100 | Epoch 4/100 | Loss: 4.8163 | PPL: 123.51 | LR: 4.60e-04 | Time: 16645s | 2066 tok/s
+2026-03-05 05:33:37 | v1.training.trainer | INFO | Epoch 4/100 | Train Loss: 4.7855 (PPL: 119.77) | Val Loss: 4.6905 (PPL: 108.91) | Time: 3466.9s | Mem: 4.0GB
+2026-03-05 05:33:38 | v1.training.trainer | INFO | Checkpoint saved: /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/pretrained/best
+2026-03-05 05:33:38 | v1.training.trainer | INFO |   New best (val_loss=4.6905, improved by 0.3914)
+2026-03-05 05:34:50 | v1.training.trainer | INFO | Step 2200 | Epoch 5/100 | Loss: 4.6032 | PPL: 99.80 | LR: 4.82e-04 | Time: 17410s | 2069 tok/s
+2026-03-05 05:45:40 | v1.training.trainer | INFO | Step 2300 | Epoch 5/100 | Loss: 4.5447 | PPL: 94.13 | LR: 5.04e-04 | Time: 18061s | 2085 tok/s
+2026-03-05 05:55:58 | v1.training.trainer | INFO | Step 2400 | Epoch 5/100 | Loss: 4.5041 | PPL: 90.39 | LR: 5.26e-04 | Time: 18679s | 2104 tok/s
+2026-03-05 06:06:27 | v1.training.trainer | INFO | Step 2500 | Epoch 5/100 | Loss: 4.4754 | PPL: 87.83 | LR: 5.48e-04 | Time: 19308s | 2120 tok/s
+2026-03-05 06:22:15 | v1.training.trainer | INFO | Step 2600 | Epoch 5/100 | Loss: 4.4316 | PPL: 84.06 | LR: 5.70e-04 | Time: 20255s | 2102 tok/s
+2026-03-05 06:32:46 | v1.training.trainer | INFO | Step 2700 | Epoch 5/100 | Loss: 4.4219 | PPL: 83.25 | LR: 5.92e-04 | Time: 20886s | 2117 tok/s
+2026-03-05 06:37:01 | v1.training.trainer | INFO | Epoch 5/100 | Train Loss: 4.4117 (PPL: 82.41) | Val Loss: 4.3626 (PPL: 78.46) | Time: 3755.5s | Mem: 4.0GB
+2026-03-05 06:37:02 | v1.training.trainer | INFO | Checkpoint saved: /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/pretrained/best
+2026-03-05 06:37:02 | v1.training.trainer | INFO |   New best (val_loss=4.3626, improved by 0.3279)
+2026-03-05 06:44:32 | v1.training.trainer | INFO | Step 2800 | Epoch 6/100 | Loss: 4.1042 | PPL: 60.59 | LR: 6.00e-04 | Time: 21593s | 2124 tok/s
+2026-03-05 07:02:45 | v1.training.trainer | INFO | Step 2900 | Epoch 6/100 | Loss: 4.1261 | PPL: 61.94 | LR: 6.00e-04 | Time: 22686s | 2093 tok/s
+2026-03-05 07:15:31 | v1.training.trainer | INFO | Step 3000 | Epoch 6/100 | Loss: 4.1072 | PPL: 60.78 | LR: 6.00e-04 | Time: 23451s | 2095 tok/s
+2026-03-05 07:25:24 | v1.training.trainer | INFO | Step 3100 | Epoch 6/100 | Loss: 4.0940 | PPL: 59.98 | LR: 6.00e-04 | Time: 24045s | 2111 tok/s
+2026-03-05 07:35:22 | v1.training.trainer | INFO | Step 3200 | Epoch 6/100 | Loss: 4.0910 | PPL: 59.80 | LR: 6.00e-04 | Time: 24642s | 2127 tok/s
+2026-03-05 07:44:48 | v1.training.trainer | INFO | Epoch 6/100 | Train Loss: 4.0852 (PPL: 59.45) | Val Loss: 4.0731 (PPL: 58.74) | Time: 4020.4s | Mem: 4.0GB
+2026-03-05 07:44:49 | v1.training.trainer | INFO | Checkpoint saved: /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/pretrained/best
+2026-03-05 07:44:49 | v1.training.trainer | INFO |   New best (val_loss=4.0731, improved by 0.2895)
+2026-03-05 07:46:35 | v1.training.trainer | INFO | Step 3300 | Epoch 7/100 | Loss: 3.8817 | PPL: 48.51 | LR: 6.00e-04 | Time: 25315s | 2135 tok/s
+2026-03-05 08:00:01 | v1.training.trainer | INFO | Step 3400 | Epoch 7/100 | Loss: 3.8584 | PPL: 47.39 | LR: 6.00e-04 | Time: 26121s | 2132 tok/s
+2026-03-05 08:14:53 | v1.training.trainer | INFO | Step 3500 | Epoch 7/100 | Loss: 3.8564 | PPL: 47.30 | LR: 6.00e-04 | Time: 27013s | 2122 tok/s
+2026-03-05 08:45:49 | v1.training.trainer | INFO | Step 3600 | Epoch 7/100 | Loss: 3.8421 | PPL: 46.62 | LR: 6.00e-04 | Time: 28870s | 2042 tok/s
+2026-03-05 09:17:06 | v1.training.trainer | INFO | Step 3700 | Epoch 7/100 | Loss: 3.8274 | PPL: 45.94 | LR: 6.00e-04 | Time: 30747s | 1971 tok/s
+2026-03-05 09:50:42 | v1.training.trainer | INFO | Step 3800 | Epoch 7/100 | Loss: 3.8108 | PPL: 45.19 | LR: 5.99e-04 | Time: 32762s | 1899 tok/s
+2026-03-05 09:57:51 | v1.training.trainer | INFO | Epoch 7/100 | Train Loss: 3.8002 (PPL: 44.71) | Val Loss: 3.8534 (PPL: 47.15) | Time: 7934.1s | Mem: 4.0GB
+2026-03-05 09:57:52 | v1.training.trainer | INFO | Checkpoint saved: /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/pretrained/best
+2026-03-05 09:57:52 | v1.training.trainer | INFO |   New best (val_loss=3.8534, improved by 0.2197)
+2026-03-05 10:07:41 | v1.training.trainer | INFO | Step 3900 | Epoch 8/100 | Loss: 3.6275 | PPL: 37.62 | LR: 5.99e-04 | Time: 33782s | 1891 tok/s
+2026-03-05 10:25:39 | v1.training.trainer | INFO | Step 4000 | Epoch 8/100 | Loss: 3.5955 | PPL: 36.43 | LR: 5.99e-04 | Time: 34860s | 1879 tok/s
+2026-03-05 10:38:54 | v1.training.trainer | INFO | Step 4100 | Epoch 8/100 | Loss: 3.5795 | PPL: 35.85 | LR: 5.99e-04 | Time: 35654s | 1883 tok/s
+2026-03-05 10:50:56 | v1.training.trainer | INFO | Step 4200 | Epoch 8/100 | Loss: 3.5797 | PPL: 35.86 | LR: 5.99e-04 | Time: 36377s | 1891 tok/s
+2026-03-05 11:04:58 | v1.training.trainer | INFO | Step 4300 | Epoch 8/100 | Loss: 3.5644 | PPL: 35.32 | LR: 5.99e-04 | Time: 37219s | 1892 tok/s
+2026-03-05 11:17:10 | v1.training.trainer | INFO | Epoch 8/100 | Train Loss: 3.5667 (PPL: 35.40) | Val Loss: 3.6948 (PPL: 40.24) | Time: 4711.3s | Mem: 4.0GB
+2026-03-05 11:17:11 | v1.training.trainer | INFO | Checkpoint saved: /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/pretrained/best
+2026-03-05 11:17:11 | v1.training.trainer | INFO |   New best (val_loss=3.6948, improved by 0.1586)
+2026-03-05 11:26:19 | v1.training.trainer | INFO | Step 4400 | Epoch 9/100 | Loss: 3.3675 | PPL: 29.01 | LR: 5.99e-04 | Time: 38500s | 1872 tok/s
+2026-03-05 12:00:28 | v1.training.trainer | INFO | Step 4500 | Epoch 9/100 | Loss: 3.3373 | PPL: 28.14 | LR: 5.98e-04 | Time: 40548s | 1817 tok/s
+2026-03-05 12:35:13 | v1.training.trainer | INFO | Step 4600 | Epoch 9/100 | Loss: 3.3618 | PPL: 28.84 | LR: 5.98e-04 | Time: 42633s | 1767 tok/s
+2026-03-05 13:50:28 | v1.training.trainer | INFO | Step 4700 | Epoch 9/100 | Loss: 3.3728 | PPL: 29.16 | LR: 5.98e-04 | Time: 47148s | 1632 tok/s
+2026-03-05 14:27:50 | v1.training.trainer | INFO | Step 4800 | Epoch 9/100 | Loss: 3.3746 | PPL: 29.21 | LR: 5.98e-04 | Time: 49390s | 1592 tok/s
+2026-03-05 15:15:40 | v1.training.trainer | INFO | Step 4900 | Epoch 9/100 | Loss: 3.3743 | PPL: 29.20 | LR: 5.98e-04 | Time: 52261s | 1535 tok/s
+2026-03-05 16:00:05 | v1.training.trainer | INFO | Epoch 9/100 | Train Loss: 3.3760 (PPL: 29.25) | Val Loss: 3.5560 (PPL: 35.02) | Time: 16577.8s | Mem: 4.0GB
+2026-03-05 16:00:06 | v1.training.trainer | INFO | Checkpoint saved: /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/pretrained/best
+2026-03-05 16:00:06 | v1.training.trainer | INFO |   New best (val_loss=3.5560, improved by 0.1388)
+2026-03-05 18:04:50 | v1.training.trainer | INFO | Step 5000 | Epoch 10/100 | Loss: 3.1721 | PPL: 23.86 | LR: 5.97e-04 | Time: 62410s | 1312 tok/s
+2026-03-05 19:13:31 | v1.training.trainer | INFO | Step 5100 | Epoch 10/100 | Loss: 3.1880 | PPL: 24.24 | LR: 5.97e-04 | Time: 66532s | 1255 tok/s
+2026-03-05 19:52:32 | v1.training.trainer | INFO | Step 5200 | Epoch 10/100 | Loss: 3.1834 | PPL: 24.13 | LR: 5.97e-04 | Time: 68872s | 1236 tok/s
+2026-03-05 21:13:42 | v1.training.trainer | INFO | Step 5300 | Epoch 10/100 | Loss: 3.1935 | PPL: 24.37 | LR: 5.97e-04 | Time: 73742s | 1177 tok/s
+2026-03-06 02:18:20 | v1.training.trainer | INFO | Step 5400 | Epoch 10/100 | Loss: 3.2091 | PPL: 24.76 | LR: 5.97e-04 | Time: 92020s | 961 tok/s
+2026-03-06 03:02:40 | v1.training.trainer | INFO | Epoch 10/100 | Train Loss: 3.2148 (PPL: 24.90) | Val Loss: 3.4589 (PPL: 31.78) | Time: 39677.4s | Mem: 4.0GB
+2026-03-06 03:02:40 | v1.training.trainer | INFO | Checkpoint saved: /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/pretrained/best
+2026-03-06 03:02:40 | v1.training.trainer | INFO |   New best (val_loss=3.4589, improved by 0.0971)
+2026-03-06 03:23:31 | v1.training.trainer | INFO | Step 5500 | Epoch 11/100 | Loss: 3.0530 | PPL: 21.18 | LR: 5.96e-04 | Time: 95932s | 939 tok/s
+2026-03-06 04:56:43 | v1.training.trainer | INFO | Step 5600 | Epoch 11/100 | Loss: 3.0492 | PPL: 21.10 | LR: 5.96e-04 | Time: 101524s | 903 tok/s
+2026-03-06 06:56:53 | v1.training.trainer | INFO | Step 5700 | Epoch 11/100 | Loss: 3.0549 | PPL: 21.22 | LR: 5.96e-04 | Time: 108734s | 858 tok/s
+2026-03-06 07:19:16 | v1.training.trainer | INFO | Step 5800 | Epoch 11/100 | Loss: 3.0656 | PPL: 21.45 | LR: 5.95e-04 | Time: 110076s | 863 tok/s
+2026-03-06 08:56:10 | pretrain | INFO | Device: mps
+2026-03-06 08:56:10 | pretrain | INFO | Config: /Users/vr/Code/LLMs/GPT-2/v1/config.yaml
+2026-03-06 08:56:10 | pretrain | INFO | Model: GPT2Config(vocab_size=32305, d_model=512, n_layers=8, n_heads=8, d_ff=2048, context_length=2048, dropout=0.1, bias=False)
+2026-03-06 08:56:10 | pretrain | INFO | Parameters: 42,771,968
+2026-03-06 08:56:10 | pretrain | INFO | Preparing datasets...
+2026-03-06 08:56:10 | v1.data.dataset | INFO | Loading cached tokens from /Users/vr/Code/LLMs/GPT-2/v1/data/cache/tokenized.npy
+2026-03-06 08:56:10 | v1.data.dataset | INFO | Loaded 9,973,151 cached tokens
+2026-03-06 08:56:10 | v1.data.dataset | INFO | Chunked 9,973,151 tokens into 4,869 chunks of 2048 tokens (1439 tokens dropped)
+2026-03-06 08:56:10 | v1.data.dataset | INFO | Split: 4383 train, 486 val (10% held out)
+2026-03-06 08:56:10 | pretrain | INFO | Train: 4383 chunks, Val: 486 chunks
+2026-03-06 08:56:13 | v1.training.trainer | INFO | Loading resume checkpoint from /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/pretrained/resume/training_state.pt
+2026-03-06 08:56:13 | v1.training.trainer | INFO |   No optimizer state — starting with fresh optimizer (momentum will restart)
+2026-03-06 08:56:13 | v1.training.trainer | INFO | Resumed from epoch 10 | global_step=5470 | best_val_loss=3.4589 | patience=0
+2026-03-06 08:56:13 | pretrain | INFO | Resuming pretraining...
+2026-03-06 08:56:13 | pretrain | INFO |   Graceful stop: touch /Users/vr/Code/LLMs/GPT-2/v1/STOP
+2026-03-06 08:56:13 | v1.training.trainer | INFO | Training: 100 max epochs, 547 steps/epoch, 136 weight updates/epoch, batch=8, accum=4, effective_batch=32
+2026-03-06 08:56:13 | v1.training.trainer | INFO | Data: 4383 train chunks, 486 val chunks, context=2048, tokens/update=65,504
+2026-03-06 08:56:13 | v1.training.trainer | INFO | Resuming from epoch 11
+2026-03-06 08:59:51 | v1.training.trainer | INFO | Step 5500 | Epoch 11/100 | Loss: 3.7366 | PPL: 41.96 | LR: 5.96e-04 | Time: 218s | 412716 tok/s
+2026-03-06 09:02:58 | pretrain | INFO | Device: mps
+2026-03-06 09:02:58 | pretrain | INFO | Config: /Users/vr/Code/LLMs/GPT-2/v1/config.yaml
+2026-03-06 09:02:59 | pretrain | INFO | Model: GPT2Config(vocab_size=32305, d_model=512, n_layers=8, n_heads=8, d_ff=2048, context_length=2048, dropout=0.1, bias=False)
+2026-03-06 09:02:59 | pretrain | INFO | Parameters: 42,771,968
+2026-03-06 09:02:59 | pretrain | INFO | Preparing datasets...
+2026-03-06 09:02:59 | v1.data.dataset | INFO | Loading cached tokens from /Users/vr/Code/LLMs/GPT-2/v1/data/cache/tokenized.npy
+2026-03-06 09:02:59 | v1.data.dataset | INFO | Loaded 9,973,151 cached tokens
+2026-03-06 09:02:59 | v1.data.dataset | INFO | Chunked 9,973,151 tokens into 4,869 chunks of 2048 tokens (1439 tokens dropped)
+2026-03-06 09:02:59 | v1.data.dataset | INFO | Split: 4383 train, 486 val (10% held out)
+2026-03-06 09:02:59 | pretrain | INFO | Train: 4383 chunks, Val: 486 chunks
+2026-03-06 09:02:59 | v1.training.trainer | INFO | Loading resume checkpoint from /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/pretrained/resume/training_state.pt
+2026-03-06 09:02:59 | v1.training.trainer | INFO |   No optimizer state — starting with fresh optimizer (momentum will restart)
+2026-03-06 09:02:59 | v1.training.trainer | INFO | Resumed from epoch 10 | global_step=5470 | best_val_loss=3.4589 | patience=0
+2026-03-06 09:02:59 | pretrain | INFO | Resuming pretraining...
+2026-03-06 09:02:59 | pretrain | INFO |   Graceful stop: touch /Users/vr/Code/LLMs/GPT-2/v1/STOP
+2026-03-06 09:02:59 | v1.training.trainer | INFO | Training: 100 max epochs, 547 steps/epoch, 136 weight updates/epoch, batch=8, accum=4, effective_batch=32
+2026-03-06 09:02:59 | v1.training.trainer | INFO | Data: 4383 train chunks, 486 val chunks, context=2048, tokens/update=65,504
+2026-03-06 09:02:59 | v1.training.trainer | INFO | Resuming from epoch 11
+2026-03-06 09:08:38 | v1.training.trainer | INFO | Step 5500 | Epoch 11/100 | Loss: 3.7366 | PPL: 41.96 | LR: 5.96e-04 | Time: 339s | 1449 tok/s
+2026-03-06 09:34:28 | v1.training.trainer | INFO | Step 5600 | Epoch 11/100 | Loss: 3.3647 | PPL: 28.93 | LR: 5.96e-04 | Time: 1888s | 1127 tok/s
+2026-03-06 10:05:31 | v1.training.trainer | INFO | Step 5700 | Epoch 11/100 | Loss: 3.2807 | PPL: 26.60 | LR: 5.96e-04 | Time: 3752s | 1004 tok/s
+2026-03-06 10:34:13 | v1.training.trainer | INFO | Step 5800 | Epoch 11/100 | Loss: 3.2336 | PPL: 25.37 | LR: 5.95e-04 | Time: 5474s | 987 tok/s
+2026-03-06 11:07:05 | v1.training.trainer | INFO | Step 5900 | Epoch 11/100 | Loss: 3.2065 | PPL: 24.69 | LR: 5.95e-04 | Time: 7446s | 946 tok/s
+2026-03-06 11:42:52 | v1.training.trainer | INFO | Step 6000 | Epoch 11/100 | Loss: 3.1916 | PPL: 24.33 | LR: 5.95e-04 | Time: 9593s | 905 tok/s
+2026-03-06 12:00:00 | v1.training.trainer | INFO | Epoch 11/100 | Train Loss: 3.1911 (PPL: 24.31) | Val Loss: 3.4046 (PPL: 30.10) | Time: 10518.6s | Mem: 4.1GB
+2026-03-06 12:00:00 | v1.training.trainer | INFO | Checkpoint saved: /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/pretrained/best
+2026-03-06 12:00:00 | v1.training.trainer | INFO |   New best (val_loss=3.4046, improved by 0.0543)
+2026-03-06 12:00:03 | v1.training.trainer | INFO |   Weight stats logged for epoch 11
+2026-03-06 12:00:04 | v1.training.trainer | INFO |   Resume checkpoint saved (epoch 11)
+2026-03-06 12:41:21 | v1.training.trainer | INFO | Step 6100 | Epoch 12/100 | Loss: 2.9494 | PPL: 19.09 | LR: 5.94e-04 | Time: 13101s | 787 tok/s
+2026-03-06 14:56:12 | pretrain | INFO | Device: mps
+2026-03-06 14:56:12 | pretrain | INFO | Config: /Users/vr/Code/LLMs/GPT-2/v1/config.yaml
+2026-03-06 14:56:13 | pretrain | INFO | Model: GPT2Config(vocab_size=32305, d_model=512, n_layers=8, n_heads=8, d_ff=2048, context_length=2048, dropout=0.1, bias=False)
+2026-03-06 14:56:13 | pretrain | INFO | Parameters: 42,771,968
+2026-03-06 14:56:13 | pretrain | INFO | Preparing datasets...
+2026-03-06 14:56:13 | v1.data.dataset | INFO | Loading cached tokens from /Users/vr/Code/LLMs/GPT-2/v1/data/cache/tokenized.npy
+2026-03-06 14:56:13 | v1.data.dataset | INFO | Loaded 9,973,151 cached tokens
+2026-03-06 14:56:13 | v1.data.dataset | INFO | Chunked 9,973,151 tokens into 4,869 chunks of 2048 tokens (1439 tokens dropped)
+2026-03-06 14:56:13 | v1.data.dataset | INFO | Split: 4383 train, 486 val (10% held out)
+2026-03-06 14:56:13 | pretrain | INFO | Train: 4383 chunks, Val: 486 chunks
+2026-03-06 14:56:14 | v1.training.trainer | INFO | Loading resume checkpoint from /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/pretrained/resume/training_state.pt
+2026-03-06 14:56:14 | v1.training.trainer | INFO | Resumed from epoch 11 | global_step=6017 | best_val_loss=3.4046 | patience=0
+2026-03-06 14:56:14 | pretrain | INFO | Resuming pretraining...
+2026-03-06 14:56:14 | pretrain | INFO |   Graceful stop: touch /Users/vr/Code/LLMs/GPT-2/v1/STOP
+2026-03-06 14:56:14 | v1.training.trainer | INFO | Training: 100 max epochs, 547 steps/epoch, 136 weight updates/epoch, batch=8, accum=4, effective_batch=32
+2026-03-06 14:56:14 | v1.training.trainer | INFO | Data: 4383 train chunks, 486 val chunks, context=2048, tokens/update=65,504
+2026-03-06 14:56:14 | v1.training.trainer | INFO | Resuming from epoch 12
+2026-03-06 15:06:15 | v1.training.trainer | INFO | Step 6100 | Epoch 12/100 | Loss: 2.9880 | PPL: 19.85 | LR: 5.94e-04 | Time: 600s | 2265 tok/s
+2026-03-06 15:20:32 | v1.training.trainer | INFO | Step 6200 | Epoch 12/100 | Loss: 2.9608 | PPL: 19.31 | LR: 5.94e-04 | Time: 1457s | 2057 tok/s
+2026-03-06 15:30:46 | v1.training.trainer | INFO | Step 6300 | Epoch 12/100 | Loss: 2.9587 | PPL: 19.27 | LR: 5.94e-04 | Time: 2072s | 2237 tok/s
+2026-03-06 15:53:31 | v1.training.trainer | INFO | Step 6400 | Epoch 12/100 | Loss: 2.9450 | PPL: 19.01 | LR: 5.93e-04 | Time: 3436s | 1825 tok/s
+2026-03-06 16:03:12 | v1.training.trainer | INFO | Step 6500 | Epoch 12/100 | Loss: 2.9353 | PPL: 18.83 | LR: 5.93e-04 | Time: 4017s | 1969 tok/s
+2026-03-06 16:07:19 | v1.training.trainer | INFO | Epoch 12/100 | Train Loss: 2.9355 (PPL: 18.83) | Val Loss: 3.3694 (PPL: 29.06) | Time: 4219.4s | Mem: 2.6GB
+2026-03-06 16:07:20 | v1.training.trainer | INFO | Checkpoint saved: /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/pretrained/best
+2026-03-06 16:07:20 | v1.training.trainer | INFO |   New best (val_loss=3.3694, improved by 0.0352)
+2026-03-06 16:07:21 | v1.training.trainer | INFO |   Weight stats logged for epoch 12
+2026-03-06 16:07:21 | v1.training.trainer | INFO |   LR override: 0.000600 -> 0.001000 (min_lr: 0.000060 -> 0.000100)
+2026-03-06 16:07:22 | v1.training.trainer | INFO |   Resume checkpoint saved (epoch 12)
+2026-03-06 16:10:38 | v1.training.trainer | INFO | Step 6600 | Epoch 13/100 | Loss: 2.8764 | PPL: 17.75 | LR: 9.88e-04 | Time: 4464s | 2139 tok/s
+2026-03-06 16:19:50 | v1.training.trainer | INFO | Step 6700 | Epoch 13/100 | Loss: 2.9463 | PPL: 19.04 | LR: 9.87e-04 | Time: 5015s | 2230 tok/s
+2026-03-06 16:28:59 | v1.training.trainer | INFO | Step 6800 | Epoch 13/100 | Loss: 2.9740 | PPL: 19.57 | LR: 9.86e-04 | Time: 5565s | 2304 tok/s
+2026-03-06 16:37:26 | v1.training.trainer | INFO | Step 6900 | Epoch 13/100 | Loss: 2.9899 | PPL: 19.88 | LR: 9.86e-04 | Time: 6072s | 2382 tok/s
+2026-03-06 16:46:04 | v1.training.trainer | INFO | Step 7000 | Epoch 13/100 | Loss: 3.0086 | PPL: 20.26 | LR: 9.85e-04 | Time: 6590s | 2443 tok/s
+2026-03-06 16:54:37 | v1.training.trainer | INFO | Step 7100 | Epoch 13/100 | Loss: 3.0193 | PPL: 20.48 | LR: 9.84e-04 | Time: 7102s | 2497 tok/s
+2026-03-06 16:56:10 | v1.training.trainer | INFO | Epoch 13/100 | Train Loss: 3.0195 (PPL: 20.48) | Val Loss: 3.3664 (PPL: 28.97) | Time: 2881.1s | Mem: 2.6GB
+2026-03-06 16:56:11 | v1.training.trainer | INFO | Checkpoint saved: /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/pretrained/best
+2026-03-06 16:56:11 | v1.training.trainer | INFO |   New best (val_loss=3.3664, improved by 0.0030)
+2026-03-06 16:56:12 | v1.training.trainer | INFO |   Weight stats logged for epoch 13
+2026-03-06 16:56:13 | v1.training.trainer | INFO |   Resume checkpoint saved (epoch 13)
+2026-03-06 17:06:09 | v1.training.trainer | INFO | Step 7200 | Epoch 14/100 | Loss: 2.8607 | PPL: 17.47 | LR: 9.84e-04 | Time: 7794s | 2486 tok/s
+2026-03-06 17:15:31 | v1.training.trainer | INFO | Step 7300 | Epoch 14/100 | Loss: 2.8655 | PPL: 17.56 | LR: 9.83e-04 | Time: 8356s | 2514 tok/s
+2026-03-06 17:24:56 | v1.training.trainer | INFO | Step 7400 | Epoch 14/100 | Loss: 2.8748 | PPL: 17.72 | LR: 9.82e-04 | Time: 8921s | 2539 tok/s
+2026-03-06 17:35:01 | v1.training.trainer | INFO | Step 7500 | Epoch 14/100 | Loss: 2.8820 | PPL: 17.85 | LR: 9.81e-04 | Time: 9526s | 2549 tok/s
+2026-03-06 17:44:24 | v1.training.trainer | INFO | Step 7600 | Epoch 14/100 | Loss: 2.8946 | PPL: 18.08 | LR: 9.81e-04 | Time: 10090s | 2569 tok/s
+2026-03-06 17:50:57 | v1.training.trainer | INFO | Epoch 14/100 | Train Loss: 2.9008 (PPL: 18.19) | Val Loss: 3.2938 (PPL: 26.94) | Time: 3236.3s | Mem: 2.6GB
+2026-03-06 17:50:58 | v1.training.trainer | INFO | Checkpoint saved: /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/pretrained/best
+2026-03-06 17:50:58 | v1.training.trainer | INFO |   New best (val_loss=3.2938, improved by 0.0726)
+2026-03-06 17:51:00 | v1.training.trainer | INFO |   Weight stats logged for epoch 14
+2026-03-06 17:51:00 | v1.training.trainer | INFO |   Resume checkpoint saved (epoch 14)
+2026-03-06 17:55:17 | v1.training.trainer | INFO | Step 7700 | Epoch 15/100 | Loss: 2.7446 | PPL: 15.56 | LR: 9.80e-04 | Time: 10742s | 2566 tok/s
+2026-03-06 18:06:24 | v1.training.trainer | INFO | Step 7800 | Epoch 15/100 | Loss: 2.7546 | PPL: 15.72 | LR: 9.79e-04 | Time: 11410s | 2559 tok/s
+2026-03-06 18:16:41 | v1.training.trainer | INFO | Step 7900 | Epoch 15/100 | Loss: 2.7630 | PPL: 15.85 | LR: 9.78e-04 | Time: 12026s | 2564 tok/s
+2026-03-06 18:27:17 | v1.training.trainer | INFO | Step 8000 | Epoch 15/100 | Loss: 2.7810 | PPL: 16.14 | LR: 9.77e-04 | Time: 12663s | 2564 tok/s
+2026-03-06 18:38:56 | v1.training.trainer | INFO | Step 8100 | Epoch 15/100 | Loss: 2.7855 | PPL: 16.21 | LR: 9.77e-04 | Time: 13362s | 2553 tok/s
+2026-03-06 18:49:46 | v1.training.trainer | INFO | Step 8200 | Epoch 15/100 | Loss: 2.7900 | PPL: 16.28 | LR: 9.76e-04 | Time: 14011s | 2551 tok/s
+2026-03-06 18:51:12 | v1.training.trainer | INFO | Epoch 15/100 | Train Loss: 2.7901 (PPL: 16.28) | Val Loss: 3.2550 (PPL: 25.92) | Time: 3564.6s | Mem: 2.6GB
+2026-03-06 18:51:12 | v1.training.trainer | INFO | Checkpoint saved: /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/pretrained/best
+2026-03-06 18:51:12 | v1.training.trainer | INFO |   New best (val_loss=3.2550, improved by 0.0388)
+2026-03-06 18:51:14 | v1.training.trainer | INFO |   Weight stats logged for epoch 15
+2026-03-06 18:51:14 | v1.training.trainer | INFO |   Resume checkpoint saved (epoch 15)
+2026-03-06 18:59:15 | v1.training.trainer | INFO | Step 8300 | Epoch 16/100 | Loss: 2.6205 | PPL: 13.74 | LR: 9.75e-04 | Time: 14580s | 2564 tok/s
+2026-03-06 19:07:54 | v1.training.trainer | INFO | Step 8400 | Epoch 16/100 | Loss: 2.6612 | PPL: 14.31 | LR: 9.74e-04 | Time: 15100s | 2584 tok/s
+2026-03-06 19:16:25 | v1.training.trainer | INFO | Step 8500 | Epoch 16/100 | Loss: 2.6667 | PPL: 14.39 | LR: 9.73e-04 | Time: 15610s | 2605 tok/s
+2026-03-06 19:24:48 | v1.training.trainer | INFO | Step 8600 | Epoch 16/100 | Loss: 2.6635 | PPL: 14.35 | LR: 9.72e-04 | Time: 16114s | 2625 tok/s
+2026-03-06 19:33:51 | v1.training.trainer | INFO | Step 8700 | Epoch 16/100 | Loss: 2.6867 | PPL: 14.68 | LR: 9.71e-04 | Time: 16657s | 2638 tok/s
+2026-03-06 19:40:24 | v1.training.trainer | INFO | Epoch 16/100 | Train Loss: 2.6890 (PPL: 14.72) | Val Loss: 3.2219 (PPL: 25.08) | Time: 2898.0s | Mem: 2.6GB
+2026-03-06 19:40:24 | v1.training.trainer | INFO | Checkpoint saved: /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/pretrained/best
+2026-03-06 19:40:24 | v1.training.trainer | INFO |   New best (val_loss=3.2219, improved by 0.0330)
+2026-03-06 19:40:26 | v1.training.trainer | INFO |   Weight stats logged for epoch 16
+2026-03-06 19:40:26 | v1.training.trainer | INFO |   Resume checkpoint saved (epoch 16)
+2026-03-06 19:43:58 | pretrain | INFO | Device: mps
+2026-03-06 19:43:58 | pretrain | INFO | Config: /Users/vr/Code/LLMs/GPT-2/v1/config.yaml
+2026-03-06 19:43:59 | pretrain | INFO | Model: GPT2Config(vocab_size=32305, d_model=512, n_layers=8, n_heads=8, d_ff=2048, context_length=2048, dropout=0.1, bias=False)
+2026-03-06 19:43:59 | pretrain | INFO | Parameters: 42,771,968
+2026-03-06 19:43:59 | pretrain | INFO | Preparing datasets...
+2026-03-06 19:43:59 | v1.data.dataset | INFO | Loading cached tokens from /Users/vr/Code/LLMs/GPT-2/v1/data/cache/tokenized.npy
+2026-03-06 19:43:59 | v1.data.dataset | INFO | Loaded 9,973,151 cached tokens
+2026-03-06 19:43:59 | v1.data.dataset | INFO | Chunked 9,973,151 tokens into 4,869 chunks of 2048 tokens (1439 tokens dropped)
+2026-03-06 19:43:59 | v1.data.dataset | INFO | Split: 4383 train, 486 val (10% held out)
+2026-03-06 19:43:59 | pretrain | INFO | Train: 4383 chunks, Val: 486 chunks
+2026-03-06 19:44:02 | v1.training.trainer | INFO | Loading resume checkpoint from /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/pretrained/resume/training_state.pt
+2026-03-06 19:44:02 | v1.training.trainer | INFO | Resumed from epoch 16 | global_step=8752 | best_val_loss=3.2219 | patience=0
+2026-03-06 19:44:02 | pretrain | INFO | Resuming pretraining...
+2026-03-06 19:44:02 | pretrain | INFO |   Graceful stop: touch /Users/vr/Code/LLMs/GPT-2/v1/STOP
+2026-03-06 19:44:02 | v1.training.trainer | INFO | Training: 100 max epochs, 547 steps/epoch, 136 weight updates/epoch, batch=8, accum=4, effective_batch=32
+2026-03-06 19:44:02 | v1.training.trainer | INFO | Data: 4383 train chunks, 486 val chunks, context=2048, tokens/update=65,504
+2026-03-06 19:44:02 | v1.training.trainer | INFO | Resuming from epoch 17
+2026-03-06 19:49:39 | v1.training.trainer | INFO | Step 8800 | Epoch 17/100 | Loss: 2.5211 | PPL: 12.44 | LR: 5.82e-04 | Time: 337s | 2333 tok/s
+2026-03-06 20:18:49 | v1.training.trainer | INFO | Step 8900 | Epoch 17/100 | Loss: 2.4552 | PPL: 11.65 | LR: 5.81e-04 | Time: 2086s | 1162 tok/s
+2026-03-06 20:33:31 | v1.training.trainer | INFO | Step 9000 | Epoch 17/100 | Loss: 2.4535 | PPL: 11.63 | LR: 5.81e-04 | Time: 2969s | 1368 tok/s
+2026-03-06 21:07:41 | v1.training.trainer | INFO | Step 9100 | Epoch 17/100 | Loss: 2.4487 | PPL: 11.57 | LR: 5.80e-04 | Time: 5018s | 1136 tok/s
+2026-03-06 21:24:13 | v1.training.trainer | INFO | Step 9200 | Epoch 17/100 | Loss: 2.4459 | PPL: 11.54 | LR: 5.80e-04 | Time: 6011s | 1221 tok/s
+2026-03-06 21:33:33 | v1.training.trainer | INFO | Epoch 17/100 | Train Loss: 2.4470 (PPL: 11.55) | Val Loss: 3.1667 (PPL: 23.73) | Time: 6524.7s | Mem: 2.6GB
+2026-03-06 21:33:33 | v1.training.trainer | INFO | Checkpoint saved: /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/pretrained/best
+2026-03-06 21:33:33 | v1.training.trainer | INFO |   New best (val_loss=3.1667, improved by 0.0553)
+2026-03-06 21:33:35 | v1.training.trainer | INFO |   Weight stats logged for epoch 17
+2026-03-06 21:33:35 | v1.training.trainer | INFO |   LR override: 0.000600 -> 0.001000 (min_lr: 0.000060 -> 0.000100)
+2026-03-06 21:33:35 | v1.training.trainer | INFO |   Resume checkpoint saved (epoch 17)
+2026-03-06 21:33:35 | v1.training.trainer | INFO | STOP signal detected at epoch 17 — saving and exiting
+2026-03-06 21:33:36 | v1.training.trainer | INFO | Checkpoint saved: /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/pretrained/final
+2026-03-06 21:33:36 | v1.training.trainer | INFO | Training complete: {'total_steps': 9299, 'total_epochs': 17, 'best_val_loss': 3.166673183441162, 'best_val_ppl': 23.728412824416818, 'total_time_seconds': 6573.291321277618}
+2026-03-06 21:33:36 | pretrain | INFO | ============================================================
+2026-03-06 21:33:36 | pretrain | INFO | PRETRAINING COMPLETE
+2026-03-06 21:33:36 | pretrain | INFO |   Epochs: 17
+2026-03-06 21:33:36 | pretrain | INFO |   Best val loss: 3.1667
+2026-03-06 21:33:36 | pretrain | INFO |   Best val PPL: 23.73
+2026-03-06 21:33:36 | pretrain | INFO |   Time: 6573s (1.8h)
+2026-03-06 21:33:36 | pretrain | INFO |   Checkpoint: /Users/vr/Code/LLMs/GPT-2/v1/checkpoints/pretrained/best
+2026-03-06 21:33:36 | pretrain | INFO |   Log: /Users/vr/Code/LLMs/GPT-2/v1/logs/pretrain.log
+2026-03-06 21:33:36 | pretrain | INFO | ============================================================

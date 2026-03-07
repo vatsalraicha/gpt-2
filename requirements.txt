@@ -1,0 +1,8 @@
+torch
+numpy
+matplotlib
+flask
+pytest
+pyyaml
+regex
+rich

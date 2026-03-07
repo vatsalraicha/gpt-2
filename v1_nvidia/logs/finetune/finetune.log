@@ -1,0 +1,71 @@
+07:28:56 [finetune] Device: cuda, seed: 42
+07:28:56 [finetune] Loading pretrained model from /content/gpt-2/v1_nvidia/checkpoints/pretrained/best
+07:28:57 [finetune] Model loaded: 42,771,968 parameters
+07:28:57 [finetune] Tokenizer loaded: vocab_size=32305
+07:28:57 [finetune] Loading Q&A data from /content/gpt-2/v1_nvidia/data/finetune/qa_train.jsonl
+07:28:57 [v1_nvidia.data.finetune_dataset] Loaded 250 Q&A pairs from /content/gpt-2/v1_nvidia/data/finetune/qa_train.jsonl
+07:28:58 [v1_nvidia.data.finetune_dataset] Token lengths: min=67, max=108, avg=86, max_length=256
+07:28:58 [v1_nvidia.data.finetune_dataset] Split: 225 train, 25 val
+07:28:58 [finetune] Train: 225 samples, Val: 25 samples
+07:28:58 [finetune] Sequence length: 256 tokens
+07:28:58 [finetune] Finetune config: lr=0.0003, min_lr=2.9999999999999997e-05, epochs=30, batch=8, accum=1, patience=8
+07:28:59 [finetune] Starting fine-tuning...
+07:28:59 [v1_nvidia.training.trainer] Training: 30 max epochs, 28 steps/epoch, 28 weight updates/epoch, batch=8, accum=1, effective_batch=8
+07:28:59 [v1_nvidia.training.trainer] Data: 225 train chunks, 25 val chunks, context=256, tokens/update=2,040
+07:29:00 [v1_nvidia.training.trainer] Epoch 1/30 | Train Loss: 3.3830 (PPL: 29.46) | Val Loss: 2.9277 (PPL: 18.69) | Time: 1.4s | Mem: 0.8GB
+07:29:00 [v1_nvidia.training.trainer] Checkpoint saved: /content/gpt-2/v1_nvidia/checkpoints/finetuned/best
+07:29:00 [v1_nvidia.training.trainer]   New best (val_loss=2.9277, improved by inf)
+07:29:01 [v1_nvidia.training.trainer]   Weight stats logged for epoch 1
+07:29:01 [v1_nvidia.training.trainer]   Resume checkpoint saved (epoch 1)
+07:29:02 [v1_nvidia.training.trainer] Epoch 2/30 | Train Loss: 2.6074 (PPL: 13.56) | Val Loss: 2.9047 (PPL: 18.26) | Time: 1.1s | Mem: 0.8GB
+07:29:03 [v1_nvidia.training.trainer] Checkpoint saved: /content/gpt-2/v1_nvidia/checkpoints/finetuned/best
+07:29:03 [v1_nvidia.training.trainer]   New best (val_loss=2.9047, improved by 0.0230)
+07:29:03 [v1_nvidia.training.trainer]   Weight stats logged for epoch 2
+07:29:04 [v1_nvidia.training.trainer]   Resume checkpoint saved (epoch 2)
+07:29:05 [v1_nvidia.training.trainer] Epoch 3/30 | Train Loss: 1.9019 (PPL: 6.70) | Val Loss: 3.0598 (PPL: 21.32) | Time: 1.1s | Mem: 0.8GB
+07:29:05 [v1_nvidia.training.trainer]   No improvement (gap=+0.1552, patience=1/8)
+07:29:05 [v1_nvidia.training.trainer]   Weight stats logged for epoch 3
+07:29:06 [v1_nvidia.training.trainer]   Resume checkpoint saved (epoch 3)
+07:29:07 [v1_nvidia.training.trainer] Step 100 | Epoch 4/30 | Loss: 1.2267 | PPL: 3.41 | LR: 3.00e-04 | Time: 8s | 24281 tok/s
+07:29:08 [v1_nvidia.training.trainer] Epoch 4/30 | Train Loss: 1.2510 (PPL: 3.49) | Val Loss: 3.2009 (PPL: 24.55) | Time: 1.1s | Mem: 0.8GB
+07:29:08 [v1_nvidia.training.trainer]   No improvement (gap=+0.2962, patience=2/8)
+07:29:08 [v1_nvidia.training.trainer]   Weight stats logged for epoch 4
+07:29:09 [v1_nvidia.training.trainer]   Resume checkpoint saved (epoch 4)
+07:29:10 [v1_nvidia.training.trainer] Epoch 5/30 | Train Loss: 0.7876 (PPL: 2.20) | Val Loss: 3.3669 (PPL: 28.99) | Time: 1.1s | Mem: 0.8GB
+07:29:10 [v1_nvidia.training.trainer]   No improvement (gap=+0.4622, patience=3/8)
+07:29:10 [v1_nvidia.training.trainer]   Weight stats logged for epoch 5
+07:29:11 [v1_nvidia.training.trainer]   Resume checkpoint saved (epoch 5)
+07:29:13 [v1_nvidia.training.trainer] Epoch 6/30 | Train Loss: 0.4997 (PPL: 1.65) | Val Loss: 3.5150 (PPL: 33.62) | Time: 1.1s | Mem: 0.8GB
+07:29:13 [v1_nvidia.training.trainer]   No improvement (gap=+0.6103, patience=4/8)
+07:29:13 [v1_nvidia.training.trainer]   Weight stats logged for epoch 6
+07:29:15 [v1_nvidia.training.trainer]   Resume checkpoint saved (epoch 6)
+07:29:16 [v1_nvidia.training.trainer] Epoch 7/30 | Train Loss: 0.3631 (PPL: 1.44) | Val Loss: 3.6706 (PPL: 39.28) | Time: 1.1s | Mem: 0.8GB
+07:29:16 [v1_nvidia.training.trainer]   No improvement (gap=+0.7659, patience=5/8)
+07:29:16 [v1_nvidia.training.trainer]   Weight stats logged for epoch 7
+07:29:17 [v1_nvidia.training.trainer]   Resume checkpoint saved (epoch 7)
+07:29:17 [v1_nvidia.training.trainer] Step 200 | Epoch 8/30 | Loss: 0.2456 | PPL: 1.28 | LR: 2.85e-04 | Time: 10s | 19706 tok/s
+07:29:18 [v1_nvidia.training.trainer] Epoch 8/30 | Train Loss: 0.2824 (PPL: 1.33) | Val Loss: 3.7922 (PPL: 44.35) | Time: 1.1s | Mem: 0.8GB
+07:29:18 [v1_nvidia.training.trainer]   No improvement (gap=+0.8875, patience=6/8)
+07:29:19 [v1_nvidia.training.trainer]   Weight stats logged for epoch 8
+07:29:20 [v1_nvidia.training.trainer]   Resume checkpoint saved (epoch 8)
+07:29:22 [v1_nvidia.training.trainer] Epoch 9/30 | Train Loss: 0.2281 (PPL: 1.26) | Val Loss: 3.9003 (PPL: 49.42) | Time: 1.1s | Mem: 0.8GB
+07:29:22 [v1_nvidia.training.trainer]   No improvement (gap=+0.9956, patience=7/8)
+07:29:22 [v1_nvidia.training.trainer]   Weight stats logged for epoch 9
+07:29:23 [v1_nvidia.training.trainer]   Resume checkpoint saved (epoch 9)
+07:29:24 [v1_nvidia.training.trainer] Epoch 10/30 | Train Loss: 0.1968 (PPL: 1.22) | Val Loss: 3.9996 (PPL: 54.58) | Time: 1.1s | Mem: 0.8GB
+07:29:24 [v1_nvidia.training.trainer]   No improvement (gap=+1.0949, patience=8/8)
+07:29:24 [v1_nvidia.training.trainer]   Weight stats logged for epoch 10
+07:29:26 [v1_nvidia.training.trainer]   Resume checkpoint saved (epoch 10)
+07:29:26 [v1_nvidia.training.trainer] Early stopping at epoch 10 (patience=8)
+07:29:26 [v1_nvidia.training.trainer] Checkpoint saved: /content/gpt-2/v1_nvidia/checkpoints/finetuned/final
+07:29:26 [v1_nvidia.training.trainer] Training complete: {'total_steps': 280, 'total_epochs': 10, 'best_val_loss': 2.9046971797943115, 'best_val_ppl': 18.259713404747068, 'total_time_seconds': 27.2063467502594}
+07:29:26 [finetune] Fine-tuning complete!
+07:29:26 [finetune] Best checkpoint: /content/gpt-2/v1_nvidia/checkpoints/finetuned/best
+07:29:26 [finetune] Metrics: /content/gpt-2/v1_nvidia/logs/finetune/metrics.jsonl
+07:29:26 [finetune] Weight stats: /content/gpt-2/v1_nvidia/logs/finetune/weight_stats.jsonl
+07:29:26 [finetune] Log: /content/gpt-2/v1_nvidia/logs/finetune/finetune.log
+07:29:26 [finetune] 
+07:29:26 [finetune] Run diagnostics:
+07:29:26 [finetune]   python -m v1_nvidia.scripts.diagnose --stage finetune
+07:29:26 [finetune] View in dashboard:
+07:29:26 [finetune]   http://localhost:5000/?stage=finetune
